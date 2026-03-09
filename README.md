@@ -1,21 +1,20 @@
-# Math Analytics Studio
+# AI-Driven Learning Analytics and Personalized Feedback System for Mathematics Education
 
-Frontend final-year project demonstrator for:
+Project codename: `Math Analytics Studio`
 
-**Automated Learning Analytics and Personalized Feedback System for Mathematics Education**
+This version has a flat structure:
 
-## Run
+- `index.html`
+- `styles.css`
+- `app.js`
 
-Open the project at:
+Open it at:
 
 `http://localhost/mathematics/`
 
-The app is built with:
+Separate project motive file:
 
-- HTML
-- CSS
-- Vanilla JavaScript
-- Chart.js via CDN
+`http://localhost/mathematics/project-motive.html`
 
 ## Demo Credentials
 
@@ -24,7 +23,6 @@ Student accounts:
 - `aanya@student.demo` / `math123`
 - `rohan@student.demo` / `math123`
 - `kavya@student.demo` / `math123`
-- `ishita@student.demo` / `math123`
 
 Teacher account:
 
@@ -34,23 +32,9 @@ Admin account:
 
 - `admin@demo.local` / `admin123`
 
-## Features
+## Included Features
 
-- Student login, dashboard, quiz, result analytics, and personalized feedback
-- Teacher dashboard with class averages, topic mastery, score distribution, and student drill-down
-- Admin runtime management for users and questions
-- Static JSON data source for users, questions, and seeded attempts
-- Session-only runtime state with JSON export for admin changes
-
-## Project Structure
-
-- `/data` seeded JSON data
-- `/css/styles.css` shared visual system
-- `/js/modules` shared logic for auth, analytics, feedback, storage, charts, and quiz evaluation
-- `/js/pages` page-specific controllers
-
-## Notes
-
-- This is a frontend demonstrator, not a secure production system.
-- Runtime edits are stored only in the current browser session.
-- Best viewed through Apache/XAMPP, not as a local `file://` page, because the app fetches JSON.
+- Student dashboard, quiz, and result analytics
+- Teacher dashboard with charts and student drill-down
+- Admin runtime CRUD for users and questions
+- Session-only storage with JSON export

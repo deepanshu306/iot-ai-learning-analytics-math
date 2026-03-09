@@ -1,0 +1,50 @@
+[
+  {
+    "id": "stu-aanya",
+    "role": "student",
+    "name": "Aanya Sharma",
+    "email": "aanya@student.demo",
+    "password": "math123",
+    "classGroup": "Section A"
+  },
+  {
+    "id": "stu-rohan",
+    "role": "student",
+    "name": "Rohan Mehta",
+    "email": "rohan@student.demo",
+    "password": "math123",
+    "classGroup": "Section A"
+  },
+  {
+    "id": "stu-kavya",
+    "role": "student",
+    "name": "Kavya Iyer",
+    "email": "kavya@student.demo",
+    "password": "math123",
+    "classGroup": "Section B"
+  },
+  {
+    "id": "stu-ishita",
+    "role": "student",
+    "name": "Ishita Sen",
+    "email": "ishita@student.demo",
+    "password": "math123",
+    "classGroup": "Section B"
+  },
+  {
+    "id": "teach-nidhi",
+    "role": "teacher",
+    "name": "Dr. Nidhi Rao",
+    "email": "nidhi@teacher.demo",
+    "password": "teach123",
+    "classGroup": "Mathematics Department"
+  },
+  {
+    "id": "admin-system",
+    "role": "admin",
+    "name": "Systems Admin",
+    "email": "admin@demo.local",
+    "password": "admin123",
+    "classGroup": "Operations"
+  }
+]

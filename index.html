@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Math Analytics Studio</title>
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body>
+    <main class="auth-shell">
+      <header class="topbar">
+        <div class="brand-lockup">
+          <div class="brand-mark">ML</div>
+          <div class="brand-copy">
+            <strong>Math Analytics Studio</strong>
+            <span>Automated learning analytics and personalized feedback</span>
+          </div>
+        </div>
+        <div class="topbar-meta">
+          <div class="meta-chip">Frontend demo for `localhost/mathematics/`</div>
+        </div>
+      </header>
+
+      <section class="hero-panel">
+        <div class="hero-copy">
+          <span class="eyebrow">Final year project demonstrator</span>
+          <h1>Track learning gaps, measure mastery, and personalize math feedback.</h1>
+          <p>
+            This browser-based system simulates a mathematics learning analytics platform for
+            algebra, trigonometry, and calculus. Students get topic-level performance analysis,
+            teachers see class trends, and admins manage runtime demo data.
+          </p>
+
+          <div class="hero-stats">
+            <article class="hero-stat">
+              <span>Topics covered</span>
+              <strong>3</strong>
+            </article>
+            <article class="hero-stat">
+              <span>Question types</span>
+              <strong>MCQ + numeric</strong>
+            </article>
+            <article class="hero-stat">
+              <span>Roles</span>
+              <strong>Student / Teacher / Admin</strong>
+            </article>
+          </div>
+        </div>
+
+        <aside class="hero-callout">
+          <section class="login-card">
+            <div class="section-heading">
+              <div>
+                <span class="eyebrow">Secure demo entry</span>
+                <h2>Sign in</h2>
+              </div>
+            </div>
+            <form id="loginForm" class="field-grid">
+              <label class="input-label">
+                <span>Email</span>
+                <input id="email" class="text-input" type="email" placeholder="user@demo.local" required />
+              </label>
+              <label class="input-label">
+                <span>Password</span>
+                <input id="password" class="text-input" type="password" placeholder="Password" required />
+              </label>
+              <button id="loginButton" class="primary-button" type="submit">Enter dashboard</button>
+            </form>
+            <p id="loginMessage" class="status-message">Choose any demo account below to autofill credentials.</p>
+          </section>
+        </aside>
+      </section>
+
+      <section class="panel" style="margin-top: 24px;">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">Demo users</span>
+            <h2>Role-based access</h2>
+          </div>
+          <p>Click a card to fill the login form instantly.</p>
+        </div>
+        <div id="demoAccounts" class="section-stack"></div>
+      </section>
+    </main>
+
+    <script type="module" src="./js/pages/index.js"></script>
+  </body>
+</html>

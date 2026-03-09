@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Dashboard | Math Analytics Studio</title>
+    <link rel="stylesheet" href="./css/styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <main class="page-shell">
+      <header class="topbar">
+        <div class="brand-lockup">
+          <div class="brand-mark">MS</div>
+          <div class="brand-copy">
+            <strong>Student Command Center</strong>
+            <span data-class-group>Mathematics</span>
+          </div>
+        </div>
+        <nav class="nav-links">
+          <a class="nav-link active" href="./student.html">Dashboard</a>
+          <a class="nav-link" href="./quiz.html">Quiz Lab</a>
+          <a class="nav-link" href="./result.html">Latest Result</a>
+        </nav>
+        <div class="topbar-meta">
+          <div class="meta-chip"><span data-user-name></span> · <span data-role-label></span></div>
+          <button class="ghost-button" data-logout>Logout</button>
+        </div>
+      </header>
+
+      <section class="panel">
+        <div class="panel-headline">
+          <div>
+            <span class="eyebrow">Progress snapshot</span>
+            <h1>Measure how each attempt changes your mastery.</h1>
+          </div>
+          <div class="shell-actions">
+            <a class="primary-button" href="./quiz.html">Start a new quiz</a>
+            <div class="meta-chip">Latest update: <span id="latestAttemptDate"></span></div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <article class="stat-card">
+            <span>Average accuracy</span>
+            <strong id="avgAccuracy">0%</strong>
+          </article>
+          <article class="stat-card">
+            <span>Latest accuracy</span>
+            <strong id="latestAccuracy">0%</strong>
+          </article>
+          <article class="stat-card">
+            <span>Strongest topic</span>
+            <strong id="strongestTopic">N/A</strong>
+          </article>
+          <article class="stat-card">
+            <span>Repeated mistake patterns</span>
+            <strong id="repeatedMistakes">0</strong>
+          </article>
+        </div>
+
+        <div class="footer-note">Stored attempts in this demo: <span id="attemptCount">0</span></div>
+      </section>
+
+      <div class="content-grid" style="margin-top: 24px;">
+        <section class="chart-card">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">Trend line</span>
+              <h2>Accuracy over time</h2>
+            </div>
+          </div>
+          <div class="chart-frame">
+            <canvas id="studentTrendChart"></canvas>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">Recommendations</span>
+              <h2>Personalized next steps</h2>
+            </div>
+          </div>
+          <div id="feedbackGrid" class="feedback-grid"></div>
+        </section>
+      </div>
+
+      <div class="content-grid" style="margin-top: 24px;">
+        <section class="panel">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">Topic analysis</span>
+              <h2>Mastery by chapter</h2>
+            </div>
+          </div>
+          <div id="topicMasteryGrid" class="topic-grid"></div>
+        </section>
+
+        <section class="table-card">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">Recent history</span>
+              <h2>Stored attempts</h2>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Score</th>
+                <th>Accuracy</th>
+                <th>Avg time</th>
+              </tr>
+            </thead>
+            <tbody id="recentAttemptsBody"></tbody>
+          </table>
+        </section>
+      </div>
+    </main>
+
+    <script type="module" src="./js/pages/student.js"></script>
+  </body>
+</html>

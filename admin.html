@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard | Math Analytics Studio</title>
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <header class="topbar">
+        <div class="brand-lockup">
+          <div class="brand-mark">AD</div>
+          <div class="brand-copy">
+            <strong>Admin Studio</strong>
+            <span>Runtime user and question management</span>
+          </div>
+        </div>
+        <nav class="nav-links">
+          <a class="nav-link active" href="./admin.html">Admin Dashboard</a>
+        </nav>
+        <div class="topbar-meta">
+          <div class="meta-chip"><span data-user-name></span> · <span data-role-label></span></div>
+          <button class="ghost-button" data-logout>Logout</button>
+        </div>
+      </header>
+
+      <section class="panel">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">Runtime controls</span>
+            <h2>Manage the demonstration dataset</h2>
+          </div>
+          <button id="exportRuntime" class="primary-button" type="button">Export runtime JSON</button>
+        </div>
+        <div class="dashboard-grid">
+          <article class="stat-card">
+            <span>Total users</span>
+            <strong id="userCount">0</strong>
+          </article>
+          <article class="stat-card">
+            <span>Total questions</span>
+            <strong id="questionCount">0</strong>
+          </article>
+          <article class="stat-card">
+            <span>Topics represented</span>
+            <strong id="topicCount">0</strong>
+          </article>
+          <article class="stat-card">
+            <span>Difficulty levels</span>
+            <strong id="difficultyCount">0</strong>
+          </article>
+        </div>
+        <p id="adminMessage" class="status-message" style="margin-top: 18px;">
+          Changes here last only for the current session unless exported.
+        </p>
+      </section>
+
+      <div class="admin-grid" style="margin-top: 24px;">
+        <section class="form-card">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">Users</span>
+              <h2>Add or edit users</h2>
+            </div>
+          </div>
+          <form id="userForm" class="field-grid">
+            <input id="userId" type="hidden" />
+            <label class="input-label">
+              <span>Name</span>
+              <input id="userName" class="text-input" type="text" required />
+            </label>
+            <div class="two-column">
+              <label class="input-label">
+                <span>Role</span>
+                <select id="userRole" class="select-input">
+                  <option value="student">Student</option>
+                  <option value="teacher">Teacher</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </label>
+              <label class="input-label">
+                <span>Class group</span>
+                <input id="userGroup" class="text-input" type="text" required />
+              </label>
+            </div>
+            <label class="input-label">
+              <span>Email</span>
+              <input id="userEmail" class="text-input" type="email" required />
+            </label>
+            <label class="input-label">
+              <span>Password</span>
+              <input id="userPassword" class="text-input" type="text" required />
+            </label>
+            <div class="form-actions">
+              <button class="primary-button" type="submit">Save user</button>
+              <button id="resetUserForm" class="secondary-button" type="button">Reset</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="form-card">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">Questions</span>
+              <h2>Add or edit questions</h2>
+            </div>
+          </div>
+          <form id="questionForm" class="field-grid">
+            <input id="questionId" type="hidden" />
+            <div class="two-column">
+              <label class="input-label">
+                <span>Topic</span>
+                <select id="questionTopic" class="select-input">
+                  <option value="algebra">Algebra</option>
+                  <option value="trigonometry">Trigonometry</option>
+                  <option value="calculus">Calculus</option>
+                </select>
+              </label>
+              <label class="input-label">
+                <span>Difficulty</span>
+                <select id="questionDifficulty" class="select-input">
+                  <option value="easy">Easy</option>
+                  <option value="medium">Medium</option>
+                  <option value="hard">Hard</option>
+                </select>
+              </label>
+            </div>
+            <div class="two-column">
+              <label class="input-label">
+                <span>Subtopic</span>
+                <input id="questionSubtopic" class="text-input" type="text" required />
+              </label>
+              <label class="input-label">
+                <span>Type</span>
+                <select id="questionType" class="select-input">
+                  <option value="mcq">MCQ</option>
+                  <option value="numeric">Numeric</option>
+                </select>
+              </label>
+            </div>
+            <label class="input-label">
+              <span>Prompt</span>
+              <textarea id="questionPrompt" class="textarea-input" required></textarea>
+            </label>
+            <label class="input-label">
+              <span>Options (comma-separated for MCQ)</span>
+              <input id="questionOptions" class="text-input" type="text" />
+            </label>
+            <div class="two-column">
+              <label class="input-label">
+                <span>Correct answer</span>
+                <input id="questionCorrect" class="text-input" type="text" required />
+              </label>
+              <label class="input-label">
+                <span>Tolerance (numeric only)</span>
+                <input id="questionTolerance" class="text-input" type="number" step="0.01" />
+              </label>
+            </div>
+            <div class="two-column">
+              <label class="input-label">
+                <span>Error tag</span>
+                <input id="questionErrorTag" class="text-input" type="text" required />
+              </label>
+              <label class="input-label">
+                <span>Expected time (sec)</span>
+                <input id="questionExpectedTime" class="text-input" type="number" required />
+              </label>
+            </div>
+            <label class="input-label">
+              <span>Explanation</span>
+              <textarea id="questionExplanation" class="textarea-input" required></textarea>
+            </label>
+            <div class="form-actions">
+              <button class="primary-button" type="submit">Save question</button>
+              <button id="resetQuestionForm" class="secondary-button" type="button">Reset</button>
+            </div>
+          </form>
+        </section>
+      </div>
+
+      <div class="admin-grid" style="margin-top: 24px;">
+        <section class="table-card">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">User table</span>
+              <h2>Runtime users</h2>
+            </div>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Email</th>
+                <th>Class group</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="userTableBody"></tbody>
+          </table>
+        </section>
+
+        <section class="table-card">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">Question table</span>
+              <h2>Runtime question bank</h2>
+            </div>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Topic</th>
+                <th>Subtopic</th>
+                <th>Type</th>
+                <th>Difficulty</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="questionTableBody"></tbody>
+          </table>
+        </section>
+      </div>
+    </main>
+
+    <script type="module" src="./js/pages/admin.js"></script>
+  </body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teacher Dashboard | Math Analytics Studio</title>
+    <link rel="stylesheet" href="./css/styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <main class="page-shell">
+      <header class="topbar">
+        <div class="brand-lockup">
+          <div class="brand-mark">TD</div>
+          <div class="brand-copy">
+            <strong>Teacher Dashboard</strong>
+            <span>Class analytics and interventions</span>
+          </div>
+        </div>
+        <nav class="nav-links">
+          <a class="nav-link active" href="./teacher.html">Teacher Dashboard</a>
+        </nav>
+        <div class="topbar-meta">
+          <div class="meta-chip"><span data-user-name></span> · <span data-role-label></span></div>
+          <button class="ghost-button" data-logout>Logout</button>
+        </div>
+      </header>
+
+      <section class="panel">
+        <div class="panel-headline">
+          <div>
+            <span class="eyebrow">Classroom view</span>
+            <h1>Identify weak topics before the next mathematics test.</h1>
+          </div>
+        </div>
+        <div class="dashboard-grid">
+          <article class="stat-card">
+            <span>Class average</span>
+            <strong id="classAverage">0%</strong>
+          </article>
+          <article class="stat-card">
+            <span>Slowest topic</span>
+            <strong id="slowestTopic">N/A</strong>
+          </article>
+          <article class="stat-card">
+            <span>Weakest group</span>
+            <strong id="weakestGroup">N/A</strong>
+          </article>
+          <article class="stat-card">
+            <span>Group average</span>
+            <strong id="groupAverage">0%</strong>
+          </article>
+        </div>
+      </section>
+
+      <div class="teacher-grid" style="margin-top: 24px;">
+        <section class="chart-card">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">Topic mastery</span>
+              <h2>Class accuracy by topic</h2>
+            </div>
+          </div>
+          <div class="chart-frame mini-chart">
+            <canvas id="teacherTopicChart"></canvas>
+          </div>
+        </section>
+
+        <section class="chart-card">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">Score spread</span>
+              <h2>Performance distribution</h2>
+            </div>
+          </div>
+          <div class="chart-frame mini-chart">
+            <canvas id="teacherDistributionChart"></canvas>
+          </div>
+        </section>
+      </div>
+
+      <section class="chart-card" style="margin-top: 24px;">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">Trend analysis</span>
+            <h2>Average attempt accuracy over time</h2>
+          </div>
+        </div>
+        <div class="chart-frame">
+          <canvas id="teacherTrendChart"></canvas>
+        </div>
+      </section>
+
+      <section class="panel" style="margin-top: 24px;">
+        <div class="drilldown-header">
+          <div>
+            <span class="eyebrow">Student drill-down</span>
+            <h2>Targeted intervention planner</h2>
+          </div>
+          <label class="input-label" style="min-width: 280px;">
+            <span>Select student</span>
+            <select id="studentSelect" class="select-input"></select>
+          </label>
+        </div>
+
+        <div class="content-grid">
+          <section class="panel" style="background: rgba(255,255,255,0.44);">
+            <div class="metrics-grid">
+              <article class="stat-card">
+                <span>Student</span>
+                <strong id="studentDrilldownName">N/A</strong>
+              </article>
+              <article class="stat-card">
+                <span>Average accuracy</span>
+                <strong id="studentDrilldownAccuracy">0%</strong>
+              </article>
+              <article class="stat-card">
+                <span>Total attempts</span>
+                <strong id="studentDrilldownAttempts">0</strong>
+              </article>
+              <article class="stat-card">
+                <span>Weakest topic</span>
+                <strong id="studentDrilldownWeakness">N/A</strong>
+              </article>
+            </div>
+            <div id="teacherTopicCards" class="topic-grid" style="margin-top: 18px;"></div>
+          </section>
+
+          <section class="section-stack">
+            <article class="panel list-card">
+              <div class="section-heading">
+                <h3>Recommended interventions</h3>
+              </div>
+              <ul id="teacherInterventions"></ul>
+            </article>
+            <article class="panel list-card">
+              <div class="section-heading">
+                <h3>Repeated errors</h3>
+              </div>
+              <ul id="teacherErrors"></ul>
+            </article>
+            <article class="table-card">
+              <div class="section-heading">
+                <h3>Recent attempts</h3>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Score</th>
+                    <th>Accuracy</th>
+                  </tr>
+                </thead>
+                <tbody id="teacherRecentAttempts"></tbody>
+              </table>
+            </article>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./js/pages/teacher.js"></script>
+  </body>
+</html>

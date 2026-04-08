@@ -514,7 +514,7 @@ def add_report_body(document):
     add_body_paragraph(document, "Attach screenshots of the landing page, student dashboard, quiz screen, result page, teacher dashboard, administrator dashboard, project motive page, and IoT architecture page.")
 
     document.add_heading("Annexure II: Source Code Summary", level=1)
-    add_body_paragraph(document, "Include the important source files such as index.html, styles.css, app.js, and any supporting documentation or deployment notes.")
+    add_body_paragraph(document, "Include the important source files such as the Flask microservices under backend/services, the React 18 frontend under frontend-react, docker-compose.yml for Kafka and Cassandra, and supporting documentation or deployment notes.")
 
     document.add_heading("Annexure III: Future Enhancement Notes", level=1)
     add_body_paragraph(document, "Document possible future additions such as machine learning prediction, adaptive recommendation, backend storage, API-based event streaming, and optional hardware integration.")

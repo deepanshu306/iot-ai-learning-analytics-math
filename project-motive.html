@@ -3,225 +3,135 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Project Motive | IoT-Enabled AI-Driven Learning Analytics and Personalized Feedback System for Mathematics Education</title>
-    <link rel="stylesheet" href="./styles.css" />
+    <title>Project Motive | Automated Learning Analytics and Personalized Feedback System for Mathematics Education</title>
+    <style>
+      :root { font-family: Inter, system-ui, sans-serif; }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: linear-gradient(180deg, #f8fbff 0%, #edf3fb 100%);
+        color: #112033;
+      }
+      main { max-width: 1100px; margin: 0 auto; padding: 28px 18px 48px; }
+      .panel, .hero, .card {
+        background: rgba(255, 255, 255, 0.96);
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        box-shadow: 0 18px 48px rgba(15, 23, 42, 0.08);
+        border-radius: 24px;
+      }
+      .hero, .panel { padding: 28px; }
+      .eyebrow { margin: 0 0 10px; text-transform: uppercase; letter-spacing: 0.14em; color: #2563eb; font-size: 0.82rem; font-weight: 700; }
+      h1, h2, h3, p { margin-top: 0; }
+      h1 { font-size: clamp(2.2rem, 4vw, 3.6rem); line-height: 1.05; max-width: 860px; }
+      p { line-height: 1.72; color: #475569; }
+      .top { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+      a {
+        text-decoration: none;
+        color: #1d4ed8;
+        background: #dbeafe;
+        padding: 10px 14px;
+        border-radius: 999px;
+        font-weight: 700;
+      }
+      .grid, .card-grid { display: grid; gap: 18px; margin-top: 20px; }
+      .grid { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+      .card-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+      .card {
+        padding: 18px;
+        background: linear-gradient(180deg, #eff6ff 0%, #f8fbff 100%);
+      }
+      ul { margin: 0; padding-left: 20px; line-height: 1.7; color: #475569; }
+    </style>
   </head>
   <body>
-    <main class="page-shell">
-      <header class="topbar">
-        <div class="brand-lockup">
-          <div class="brand-mark">PM</div>
-          <div class="brand-copy">
-            <strong>Project Motive</strong>
-            <span>IoT-enabled learning analytics for mathematics education</span>
-          </div>
-        </div>
+    <main>
+      <div class="top">
+        <a href="./index.html">Back to Overview</a>
+        <a href="./iot-architecture.html">System Architecture</a>
+      </div>
 
-        <div class="topbar-meta">
-          <a class="secondary-button" href="./iot-architecture.html">IoT Architecture</a>
-          <a class="secondary-button" href="./index.html">Back to App</a>
-        </div>
-      </header>
-
-      <section class="hero-panel">
-        <div class="hero-copy">
-          <span class="eyebrow">Final Year Project Topic</span>
-          <h1>IoT-Enabled AI-Driven Learning Analytics and Personalized Feedback System for Mathematics Education</h1>
-          <p>
-            This project is designed to combine Internet of Things, learning analytics, and
-            intelligent feedback into a smart mathematics education system. Instead of depending
-            only on manual observation and final marks, the system uses software-generated data
-            from simulated IoT classroom nodes and digital assessment activity to identify weak
-            concepts, track learning progress, and support data-driven academic intervention.
-          </p>
-        </div>
-
-        <aside class="hero-callout">
-          <section class="login-card callout-dark-text">
-            <div class="section-heading">
-              <div>
-                <span class="eyebrow">Core idea</span>
-                <h2>Why this project matters</h2>
-              </div>
-            </div>
-            <p>
-              Traditional assessment usually stops at score reporting. This project extends that
-              process with simulated connected data collection, diagnosis, interpretation, and
-              intervention so that the result becomes useful for both learners and teachers.
-            </p>
-          </section>
-        </aside>
+      <section class="hero">
+        <p class="eyebrow">Project Motive</p>
+        <h1>Why this project exists in the approved stack</h1>
+        <p>
+          The project is meant to solve a real academic problem: mathematics learning platforms
+          generate large amounts of student performance data, but that data rarely becomes useful
+          feedback for students, instructors, and parents in time to improve outcomes. The motive
+          is to convert disconnected activity logs into structured learning analytics and
+          personalized intervention pathways.
+        </p>
       </section>
 
-      <section class="section-stack" style="margin-top: 24px;">
+      <section class="grid">
         <section class="panel">
-          <div class="section-heading">
-            <div>
-              <span class="eyebrow">Problem Statement</span>
-              <h2>Existing issue</h2>
-            </div>
-          </div>
+          <p class="eyebrow">Problem Description</p>
+          <h2>What needs to be solved</h2>
           <p>
-            In many classrooms, mathematics evaluation is limited to marks, percentages, and final
-            remarks, while important learning signals remain untracked in real time. Such
-            evaluation does not clearly explain why a student is underperforming, which concept is
-            weak, whether mistakes are repeated, how classroom participation changes, or how
-            performance evolves across attempts. Teachers also face difficulty in manually
-            identifying patterns across many learners, especially when quick intervention is
-            needed.
+            Online mathematics platforms, LMS systems, and digital assessments continuously produce
+            learner activity data. In most institutions, this data remains fragmented across
+            systems, so neither teachers nor parents get a clear view of concept mastery, repeated
+            mistakes, weak topics, or student risk in real time.
           </p>
         </section>
 
         <section class="panel">
-          <div class="section-heading">
-            <div>
-              <span class="eyebrow">Project Motive</span>
-              <h2>Main motive</h2>
-            </div>
-          </div>
+          <p class="eyebrow">Approved Objective</p>
+          <h2>What the system must achieve</h2>
           <p>
-            The main motive of this project is to develop a smart academic support system that
-            combines IoT-based classroom data acquisition with learning analytics and personalized
-            feedback generation. In the current prototype, the IoT layer is represented through
-            software-simulated nodes rather than physical devices. These virtual nodes generate
-            learner-related inputs such as attendance events, quiz activity, and engagement logs,
-            which are then analyzed together with mathematics assessment results to detect
-            topic-level learning gaps, repeated misconceptions, and performance trends. In this
-            way, the project moves from simple digital testing to IoT-assisted, data-driven
-            educational support without depending on hardware.
+            The system must provide real-time learning analytics and personalized feedback through a
+            scalable and secure microservices architecture. It must support feedback for students,
+            instructors, and parents, integrate with existing LMS platforms, and expose live visual
+            insights through a modern frontend.
           </p>
         </section>
+      </section>
 
-        <section class="panel">
-          <div class="section-heading">
-            <div>
-              <span class="eyebrow">IoT Relevance</span>
-              <h2>Why it fits an IoT-based project</h2>
-            </div>
-          </div>
-          <p>
-            From an IoT perspective, this project is suitable because it is based on collecting,
-            transmitting, processing, and visualizing educational data generated through simulated
-            connected endpoints. The project can be positioned as a smart classroom system in which
-            virtual IoT nodes capture attendance, quiz participation, engagement-related signals,
-            and assessment activity, while the software layer performs analytics and feedback
-            generation. From a CSE perspective, it remains strong because it combines IoT
-            architecture concepts, real-time style data handling, dashboards, decision logic, and
-            intelligent recommendation workflow without requiring hardware procurement.
-          </p>
-        </section>
+      <section class="panel">
+        <p class="eyebrow">Proposed Solution</p>
+        <h2>How the architecture answers the objective</h2>
+        <div class="card-grid">
+          <article class="card">
+            <h3>Data Collector Service</h3>
+            <p>Accepts mathematics learning events from online platforms and LMS connectors.</p>
+          </article>
+          <article class="card">
+            <h3>Data Processor Service</h3>
+            <p>Transforms raw events into topic mastery, trend data, and learner risk summaries.</p>
+          </article>
+          <article class="card">
+            <h3>Feedback Generator Service</h3>
+            <p>Builds tailored feedback for students, instructors, and parents from the analyzed data.</p>
+          </article>
+          <article class="card">
+            <h3>Visualization Service</h3>
+            <p>Delivers real-time dashboards using React 18 and D3.js.</p>
+          </article>
+          <article class="card">
+            <h3>Integration Service</h3>
+            <p>Coordinates Moodle, Canvas, and similar LMS integration flows.</p>
+          </article>
+          <article class="card">
+            <h3>Kafka + Cassandra</h3>
+            <p>Support event-driven messaging and scalable storage for learner activity streams.</p>
+          </article>
+        </div>
+      </section>
 
-        <section class="panel">
-          <div class="section-heading">
-            <div>
-              <span class="eyebrow">Prototype Strategy</span>
-              <h2>How it stays IoT-based without hardware</h2>
-            </div>
-          </div>
-          <p>
-            The current version uses a hardware-free IoT model. Instead of real sensors or boards,
-            the system simulates IoT behavior through virtual data sources, event generation, and a
-            centralized monitoring dashboard. This preserves the essential IoT pipeline of data
-            generation, transmission logic, processing, analysis, and monitoring, while keeping
-            the project practical for software-only implementation.
-          </p>
-        </section>
-
-        <section class="panel">
-          <div class="section-heading">
-            <div>
-              <span class="eyebrow">IoT Integration</span>
-              <h2>How IoT fits into the system</h2>
-            </div>
-          </div>
-          <div class="feedback-grid">
-            <article class="feedback-card">
-              <h3>Attendance node simulator</h3>
-              <p>Software-generated attendance events act as virtual IoT input for learner presence tracking.</p>
-            </article>
-            <article class="feedback-card">
-              <h3>Quiz event node</h3>
-              <p>Quiz attempts, response timing, and completion events behave as connected learning-node data.</p>
-            </article>
-            <article class="feedback-card">
-              <h3>Engagement event logger</h3>
-              <p>Interaction logs and simulated participation signals model classroom engagement without sensors.</p>
-            </article>
-            <article class="feedback-card">
-              <h3>Central analytics dashboard</h3>
-              <p>The web application acts as the monitoring, analytics, and feedback layer for the virtual IoT classroom setup.</p>
-            </article>
-          </div>
-        </section>
-
-        <section class="panel">
-          <div class="section-heading">
-            <div>
-              <span class="eyebrow">Objectives</span>
-              <h2>What the project aims to do</h2>
-            </div>
-          </div>
-          <div class="feedback-grid">
-            <article class="feedback-card">
-              <h3>Collect classroom data</h3>
-              <p>Capture attendance, quiz activity, and learner interaction data through simulated IoT endpoints.</p>
-            </article>
-            <article class="feedback-card">
-              <h3>Analyze performance</h3>
-              <p>Track score, accuracy, time taken, topic mastery, and performance trends from mathematics quiz attempts.</p>
-            </article>
-            <article class="feedback-card">
-              <h3>Detect weak areas</h3>
-              <p>Identify weak chapters such as algebra, trigonometry, and calculus using response-level analysis.</p>
-            </article>
-            <article class="feedback-card">
-              <h3>Generate feedback</h3>
-              <p>Produce personalized recommendations based on low accuracy, slow pace, repeated mistakes, and collected learning signals.</p>
-            </article>
-            <article class="feedback-card">
-              <h3>Support teachers</h3>
-              <p>Help teachers monitor class trends, compare students, and choose suitable intervention strategies.</p>
-            </article>
-            <article class="feedback-card">
-              <h3>Build a hardware-free IoT prototype</h3>
-              <p>Create a practical smart classroom prototype that demonstrates IoT workflow through virtual nodes and cloud-style analytics.</p>
-            </article>
-          </div>
-        </section>
-
-        <section class="content-grid">
-          <section class="panel">
-            <div class="section-heading">
-              <div>
-                <span class="eyebrow">Expected Outcome</span>
-                <h2>Result of the system</h2>
-              </div>
-            </div>
-          <p>
-            The expected outcome is an IoT-enabled mathematics learning support system that helps
-            students and teachers move from passive score viewing to active performance monitoring.
-            It should provide a clear analytical view of attendance-linked learning behavior,
-            subject weakness, error patterns, and intervention needs through a central dashboard,
-            even when the IoT layer is represented through software simulation.
-          </p>
-        </section>
-
-          <section class="panel">
-            <div class="section-heading">
-              <div>
-                <span class="eyebrow">Future Scope</span>
-                <h2>Possible extension</h2>
-              </div>
-            </div>
-            <p>
-              Future versions can include MQTT-style messaging, cloud-connected IoT services,
-              backend storage, adaptive question selection, predictive performance modeling,
-              ML-based recommendation engines, AI-supported tutoring suggestions, and optional
-              physical node integration if hardware is added later.
-            </p>
-          </section>
-        </section>
-
+      <section class="panel">
+        <p class="eyebrow">Why It Fits IoT Based</p>
+        <h2>Connected event flow without depending on hardware boards</h2>
+        <p>
+          The project qualifies under the IoT-based problem type because it treats LMS and
+          mathematics platform activity as connected event streams moving through a distributed
+          system. The key IoT idea here is not a physical sensor board, but connected data
+          acquisition, message flow, processing, and live monitoring across services.
+        </p>
+        <ul>
+          <li>Multiple platforms act as connected educational endpoints.</li>
+          <li>Kafka models distributed event transmission between services.</li>
+          <li>Cassandra stores large-scale event history for analytics.</li>
+          <li>React and D3 render a monitoring and feedback dashboard in near real time.</li>
+        </ul>
       </section>
     </main>
   </body>

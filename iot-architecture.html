@@ -3,180 +3,130 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>IoT Architecture | IoT-Enabled AI-Driven Learning Analytics and Personalized Feedback System for Mathematics Education</title>
-    <link rel="stylesheet" href="./styles.css" />
+    <title>System Architecture | Automated Learning Analytics and Personalized Feedback System for Mathematics Education</title>
+    <style>
+      :root { font-family: Inter, system-ui, sans-serif; }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: linear-gradient(180deg, #f8fbff 0%, #edf3fb 100%);
+        color: #112033;
+      }
+      main { max-width: 1120px; margin: 0 auto; padding: 28px 18px 48px; }
+      .hero, .panel, .node {
+        background: rgba(255, 255, 255, 0.96);
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        box-shadow: 0 18px 48px rgba(15, 23, 42, 0.08);
+        border-radius: 24px;
+      }
+      .hero, .panel { padding: 28px; }
+      .eyebrow { margin: 0 0 10px; text-transform: uppercase; letter-spacing: 0.14em; color: #2563eb; font-size: 0.82rem; font-weight: 700; }
+      h1, h2, h3, p { margin-top: 0; }
+      h1 { font-size: clamp(2.2rem, 4vw, 3.6rem); line-height: 1.05; max-width: 860px; }
+      p { line-height: 1.72; color: #475569; }
+      .top { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+      a {
+        text-decoration: none;
+        color: #1d4ed8;
+        background: #dbeafe;
+        padding: 10px 14px;
+        border-radius: 999px;
+        font-weight: 700;
+      }
+      .flow {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+        margin-top: 18px;
+      }
+      .node {
+        padding: 18px;
+        background: linear-gradient(180deg, #eff6ff 0%, #f8fbff 100%);
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 18px;
+        margin-top: 20px;
+      }
+      ul { margin: 0; padding-left: 20px; line-height: 1.7; color: #475569; }
+    </style>
   </head>
   <body>
-    <main class="page-shell">
-      <header class="topbar">
-        <div class="brand-lockup">
-          <div class="brand-mark">IA</div>
-          <div class="brand-copy">
-            <strong>IoT Architecture</strong>
-            <span>Hardware-free smart classroom architecture</span>
-          </div>
-        </div>
+    <main>
+      <div class="top">
+        <a href="./index.html">Back to Overview</a>
+        <a href="./project-motive.html">Project Motive</a>
+      </div>
 
-        <div class="topbar-meta">
-          <a class="secondary-button" href="./project-motive.html">Project Motive</a>
-          <a class="secondary-button" href="./index.html">Back to App</a>
-        </div>
-      </header>
-
-      <section class="hero-panel">
-        <div class="hero-copy">
-          <span class="eyebrow">Architecture Overview</span>
-          <h1>Software-only IoT architecture for a smart mathematics learning system.</h1>
-          <p>
-            This page explains how the project can be presented as an IoT-based system without
-            physical hardware. The architecture uses virtual IoT nodes, simulated event streams,
-            centralized processing, analytics, and dashboard-based monitoring to preserve the core
-            IoT workflow inside a software prototype.
-          </p>
-        </div>
-
-        <aside class="hero-callout">
-          <section class="login-card callout-dark-text">
-            <div class="section-heading">
-              <div>
-                <span class="eyebrow">Key position</span>
-                <h2>What makes it IoT-based</h2>
-              </div>
-            </div>
-            <p>
-              IoT is not only about hardware boards. It is also about connected data sources,
-              event generation, transmission logic, monitoring, and centralized analytics. This
-              prototype models those layers through software-generated classroom nodes.
-            </p>
-          </section>
-        </aside>
+      <section class="hero">
+        <p class="eyebrow">System Architecture</p>
+        <h1>Approved microservices pipeline for mathematics learning analytics</h1>
+        <p>
+          The architecture now centers on Python Flask microservices, Apache Kafka messaging,
+          Apache Cassandra storage, and a React 18 plus D3.js visualization frontend. The old
+          monolithic browser-only demo has been removed from the core implementation path.
+        </p>
       </section>
 
-      <section class="section-stack" style="margin-top: 24px;">
+      <section class="panel">
+        <p class="eyebrow">End-to-End Flow</p>
+        <h2>Service pipeline</h2>
+        <div class="flow">
+          <article class="node">
+            <h3>1. LMS and platform inputs</h3>
+            <p>Moodle, Canvas, and online mathematics systems produce learning events.</p>
+          </article>
+          <article class="node">
+            <h3>2. Data Collector Service</h3>
+            <p>Ingests events and prepares them for streaming through Kafka topics.</p>
+          </article>
+          <article class="node">
+            <h3>3. Processor and Feedback Services</h3>
+            <p>Compute mastery, learner risk, topic weakness, and role-specific recommendations.</p>
+          </article>
+          <article class="node">
+            <h3>4. Visualization and LMS Integration</h3>
+            <p>Expose live dashboards and synchronized academic insights to stakeholders.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="grid">
         <section class="panel">
-          <div class="section-heading">
-            <div>
-              <span class="eyebrow">Main Flow</span>
-              <h2>End-to-end IoT pipeline</h2>
-            </div>
-          </div>
-
-          <div class="architecture-flow">
-            <article class="architecture-node">
-              <span class="architecture-step">1</span>
-              <h3>Virtual IoT Nodes</h3>
-              <p>Attendance events, quiz activity, and engagement logs are produced by software-simulated classroom nodes.</p>
-            </article>
-
-            <div class="architecture-arrow">→</div>
-
-            <article class="architecture-node">
-              <span class="architecture-step">2</span>
-              <h3>Data Transmission Layer</h3>
-              <p>Events are treated as connected IoT messages flowing from distributed nodes into a central processing layer.</p>
-            </article>
-
-            <div class="architecture-arrow">→</div>
-
-            <article class="architecture-node">
-              <span class="architecture-step">3</span>
-              <h3>Analytics Engine</h3>
-              <p>The system processes topic accuracy, repeated mistakes, speed, and trend signals from the incoming data.</p>
-            </article>
-
-            <div class="architecture-arrow">→</div>
-
-            <article class="architecture-node">
-              <span class="architecture-step">4</span>
-              <h3>Feedback Dashboard</h3>
-              <p>Students, teachers, and administrators receive actionable views through one centralized monitoring interface.</p>
-            </article>
-          </div>
+          <p class="eyebrow">Core Services</p>
+          <h2>Backend modules</h2>
+          <ul>
+            <li>Data Collector Service</li>
+            <li>Data Processor Service</li>
+            <li>Feedback Generator Service</li>
+            <li>Visualization Service</li>
+            <li>Integration Service</li>
+          </ul>
         </section>
 
         <section class="panel">
-          <div class="section-heading">
-            <div>
-              <span class="eyebrow">Logical Layers</span>
-              <h2>Architecture modules</h2>
-            </div>
-          </div>
-
-          <div class="feedback-grid">
-            <article class="feedback-card">
-              <h3>Node Layer</h3>
-              <p>Represents virtual attendance nodes, quiz nodes, and classroom interaction nodes that generate learner events.</p>
-            </article>
-            <article class="feedback-card">
-              <h3>Gateway Layer</h3>
-              <p>Represents collection, formatting, and routing of simulated IoT messages into the processing workflow.</p>
-            </article>
-            <article class="feedback-card">
-              <h3>Processing Layer</h3>
-              <p>Normalizes event data, merges academic signals, and prepares structured inputs for analysis.</p>
-            </article>
-            <article class="feedback-card">
-              <h3>Analytics Layer</h3>
-              <p>Computes topic mastery, trend analysis, weak areas, repeated mistakes, and classroom-level summaries.</p>
-            </article>
-            <article class="feedback-card">
-              <h3>Decision Layer</h3>
-              <p>Generates personalized feedback and intervention suggestions based on analyzed learner behavior.</p>
-            </article>
-            <article class="feedback-card">
-              <h3>Presentation Layer</h3>
-              <p>The web dashboard acts as the cloud-style monitoring console for students, teachers, and administrators.</p>
-            </article>
-          </div>
+          <p class="eyebrow">Platform Stack</p>
+          <h2>Approved technologies</h2>
+          <ul>
+            <li>Python Flask for each microservice</li>
+            <li>Apache Kafka for message-driven event flow</li>
+            <li>Apache Cassandra for scalable persistence</li>
+            <li>React 18 and D3.js for real-time analytics views</li>
+            <li>Jupyter Notebook for exploratory analysis and experimentation</li>
+          </ul>
         </section>
+      </section>
 
-        <section class="content-grid">
-          <section class="panel">
-            <div class="section-heading">
-              <div>
-                <span class="eyebrow">Virtual Nodes</span>
-                <h2>Simulated IoT components</h2>
-              </div>
-            </div>
-            <ul class="plain-list">
-              <li>Attendance node simulator for learner presence events</li>
-              <li>Quiz event node for answer submission and response timing</li>
-              <li>Engagement logger for interaction and activity patterns</li>
-              <li>Administrative source for user and question configuration data</li>
-            </ul>
-          </section>
-
-          <section class="panel">
-            <div class="section-heading">
-              <div>
-                <span class="eyebrow">Why It Qualifies</span>
-                <h2>IoT basis without hardware</h2>
-              </div>
-            </div>
-            <ul class="plain-list">
-              <li>Multiple distributed data sources are modeled as connected IoT nodes</li>
-              <li>Event generation and centralized monitoring follow an IoT workflow</li>
-              <li>Real-time style data interpretation is demonstrated in software</li>
-              <li>The architecture is extensible to MQTT, APIs, or real devices later</li>
-            </ul>
-          </section>
-        </section>
-
-        <section class="panel">
-          <div class="section-heading">
-            <div>
-              <span class="eyebrow">Submission Positioning</span>
-              <h2>How to describe the architecture</h2>
-            </div>
-          </div>
-          <p>
-            You can describe this project as an IoT-based smart classroom analytics system with a
-            simulated node layer. The current version implements the architecture, data flow,
-            monitoring logic, analytics engine, and personalized feedback layer in software. This
-            keeps the project practical while still matching the core principles of IoT system
-            design.
-          </p>
-        </section>
+      <section class="panel">
+        <p class="eyebrow">Why This Structure</p>
+        <h2>Reason for removing the old root prototype</h2>
+        <p>
+          The old root application used plain HTML, CSS, and JavaScript as a single-page prototype.
+          That was useful for early demonstration, but it did not match the approved project
+          language and architecture. The project now uses a structure that directly reflects the
+          approved stack and problem statement.
+        </p>
       </section>
     </main>
   </body>

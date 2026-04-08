@@ -8,8 +8,9 @@ from docx.oxml.ns import qn
 from docx.shared import Inches, Pt
 
 
-OUTPUT_PATH = Path("output/doc/Deepanshu-Jain-Final-Project-Report.docx")
+OUTPUT_PATH = Path("output/doc/Deepanshu-Jain-Combined-Project-Report-and-Synopsis.docx")
 SCREENSHOT_DIR = Path("output/doc/screenshots")
+ASSET_DIR = Path("output/doc/assets")
 
 STUDENT_NAME = "Deepanshu Jain"
 ROLL_NUMBER = "2201730107"
@@ -33,6 +34,8 @@ TEACHER_COUNT = 1
 ADMIN_COUNT = 1
 QUESTION_COUNT = 12
 ATTEMPT_COUNT = 6
+PROJEXA_TEAM_ID = "26E4362"
+UNIVERSITY_LOGO = ASSET_DIR / "krmu-crest.png"
 
 
 def shade(cell, fill):
@@ -58,6 +61,8 @@ def add_page_number(paragraph):
 
 def set_document_style(document):
     section = document.sections[0]
+    section.page_width = Inches(8.27)
+    section.page_height = Inches(11.69)
     section.top_margin = Inches(1)
     section.bottom_margin = Inches(1)
     section.left_margin = Inches(1)
@@ -75,6 +80,12 @@ def set_document_style(document):
     document.styles["Heading 2"].font.size = Pt(14)
     document.styles["Heading 3"].font.size = Pt(12)
 
+    props = document.core_properties
+    props.title = PROJECT_TITLE
+    props.author = STUDENT_NAME
+    props.subject = "Combined synopsis and final project report"
+    props.keywords = "IoT, learning analytics, mathematics education, personalized feedback, smart classroom"
+
 
 def center(document, text, bold=False, size=12, after=6):
     para = document.add_paragraph()
@@ -90,6 +101,7 @@ def body(document, text):
     para = document.add_paragraph()
     para.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
     para.paragraph_format.space_after = Pt(8)
+    para.paragraph_format.line_spacing = 1.15
     run = para.add_run(text)
     run.font.name = "Times New Roman"
     run.font.size = Pt(12)
@@ -98,6 +110,7 @@ def body(document, text):
 def bullet(document, text):
     para = document.add_paragraph(style="List Bullet")
     para.paragraph_format.space_after = Pt(4)
+    para.paragraph_format.line_spacing = 1.1
     run = para.add_run(text)
     run.font.name = "Times New Roman"
     run.font.size = Pt(12)
@@ -106,9 +119,57 @@ def bullet(document, text):
 def numbered(document, text):
     para = document.add_paragraph(style="List Number")
     para.paragraph_format.space_after = Pt(4)
+    para.paragraph_format.line_spacing = 1.1
     run = para.add_run(text)
     run.font.name = "Times New Roman"
     run.font.size = Pt(12)
+
+
+def remove_table_borders(table):
+    tbl_pr = table._tbl.tblPr
+    borders = OxmlElement("w:tblBorders")
+    for edge in ("top", "left", "bottom", "right", "insideH", "insideV"):
+        elem = OxmlElement(f"w:{edge}")
+        elem.set(qn("w:val"), "nil")
+        borders.append(elem)
+    tbl_pr.append(borders)
+
+
+def set_cell_text(cell, text, *, bold=False, size=10.5, align=WD_ALIGN_PARAGRAPH.LEFT):
+    cell.text = ""
+    para = cell.paragraphs[0]
+    para.alignment = align
+    para.paragraph_format.space_after = Pt(0)
+    para.paragraph_format.line_spacing = 1.0
+    run = para.add_run(text)
+    run.font.name = "Times New Roman"
+    run.font.size = Pt(size)
+    run.bold = bold
+
+
+def set_table_widths(table, widths):
+    table.autofit = False
+    for row in table.rows:
+        for index, width in enumerate(widths):
+            if index < len(row.cells):
+                row.cells[index].width = Inches(width)
+
+
+def add_signature_block(document, left_lines, right_lines=None):
+    cols = 2 if right_lines else 1
+    rows = max(len(left_lines), len(right_lines or []))
+    table = document.add_table(rows=rows, cols=cols)
+    table.alignment = WD_TABLE_ALIGNMENT.CENTER
+    remove_table_borders(table)
+    set_table_widths(table, [3.1, 3.1] if cols == 2 else [6.2])
+
+    for row_index in range(rows):
+        if row_index < len(left_lines):
+            set_cell_text(table.rows[row_index].cells[0], left_lines[row_index], size=11)
+        if right_lines and row_index < len(right_lines):
+            set_cell_text(table.rows[row_index].cells[1], right_lines[row_index], size=11)
+
+    document.add_paragraph()
 
 
 def add_footer(section):
@@ -122,15 +183,20 @@ def add_footer(section):
 
 def add_heading_page_break(document, title, level=1):
     document.add_page_break()
-    document.add_heading(title, level=level)
+    heading = document.add_heading(title, level=level)
+    heading.paragraph_format.space_after = Pt(10)
 
 
-def add_picture_with_caption(document, image_name, caption, width=4.8):
+def add_picture_with_caption(document, image_name, caption, width=4.15, page_break_before=False):
     image_path = SCREENSHOT_DIR / image_name
     if not image_path.exists():
-      return
+        return
+    if page_break_before:
+        document.add_page_break()
     para = document.add_paragraph()
     para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    para.paragraph_format.space_before = Pt(6)
+    para.paragraph_format.space_after = Pt(4)
     run = para.add_run()
     run.add_picture(str(image_path), width=Inches(width))
     caption_para = document.add_paragraph()
@@ -139,13 +205,28 @@ def add_picture_with_caption(document, image_name, caption, width=4.8):
     caption_run.font.name = "Times New Roman"
     caption_run.font.size = Pt(10)
     caption_run.italic = True
-    caption_para.paragraph_format.space_after = Pt(10)
+    caption_para.paragraph_format.space_after = Pt(8)
+
+
+def add_table_title(document, text):
+    para = document.add_paragraph()
+    para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    para.paragraph_format.space_after = Pt(6)
+    run = para.add_run(text)
+    run.font.name = "Times New Roman"
+    run.font.size = Pt(11)
+    run.bold = True
 
 
 def cover_page(document):
+    for _ in range(3):
+        document.add_paragraph()
     center(document, "Major Project Report", bold=True, size=18, after=16)
+    center(document, "Combined Synopsis and Final Report", size=12, after=10)
+    center(document, f"Project Code: {PROJECT_CODE}", size=11, after=10)
     center(document, PROJECT_TITLE, bold=True, size=18, after=18)
     center(document, f"Project Category: {PROJECT_CATEGORY}", size=12, after=10)
+    center(document, f"Projexa Team Id- {PROJEXA_TEAM_ID}", size=12, after=12)
     center(document, "Submitted in partial fulfilment of the requirement of the degree of", size=12, after=4)
     center(document, PROGRAM, bold=True, size=14, after=4)
     center(document, SEMESTER, size=12, after=4)
@@ -159,6 +240,13 @@ def cover_page(document):
     center(document, "Project Guide", size=11, after=18)
     center(document, "Department of Computer Science and Engineering", bold=True, size=12, after=2)
     center(document, "School of Engineering and Technology", bold=True, size=12, after=2)
+    if UNIVERSITY_LOGO.exists():
+        para = document.add_paragraph()
+        para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        para.paragraph_format.space_before = Pt(10)
+        para.paragraph_format.space_after = Pt(10)
+        run = para.add_run()
+        run.add_picture(str(UNIVERSITY_LOGO), width=Inches(1.45))
     center(document, f"{UNIVERSITY_NAME}, {CITY}, India", size=12, after=2)
     center(document, SUBMISSION_MONTH, size=12, after=0)
     document.add_page_break()
@@ -174,11 +262,16 @@ def front_matter(document):
         "award of any degree, diploma, or certificate. The concepts, explanations, analysis, and "
         "implementation details presented in this report are true to the best of my knowledge."
     )
-    body(document, f"Name: {STUDENT_NAME}")
-    body(document, f"Roll Number: {ROLL_NUMBER}")
-    body(document, f"Section: {SECTION}")
-    body(document, "Signature: __________________________")
-    body(document, "Date: __________________________")
+    add_signature_block(
+        document,
+        [
+            f"Name: {STUDENT_NAME}",
+            f"Roll Number: {ROLL_NUMBER}",
+            f"Section: {SECTION}",
+            "Signature of Student: __________________________",
+            "Date: __________________________",
+        ]
+    )
     document.add_page_break()
 
     document.add_heading("CERTIFICATE", level=1)
@@ -190,11 +283,19 @@ def front_matter(document):
         "and Engineering / Artificial Intelligence and Machine Learning. The work presented in "
         "this report is fit for academic evaluation and project assessment."
     )
-    body(document, f"Project Guide: {MENTOR_NAME}")
-    body(document, f"Student Name: {STUDENT_NAME}")
-    body(document, f"University: {UNIVERSITY_NAME}")
-    body(document, "Signature of Guide: __________________________")
-    body(document, "Date: __________________________")
+    add_signature_block(
+        document,
+        [
+            f"Project Guide: {MENTOR_NAME}",
+            "Signature of Guide: __________________________",
+            "Date: __________________________",
+        ],
+        [
+            f"Student Name: {STUDENT_NAME}",
+            f"University: {UNIVERSITY_NAME}",
+            "Signature of Student: __________________________",
+        ],
+    )
     document.add_page_break()
 
     document.add_heading("ACKNOWLEDGEMENT", level=1)
@@ -221,14 +322,16 @@ def index_page(document):
     table.style = "Table Grid"
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
     headers = table.rows[0].cells
-    headers[0].text = "S. No."
-    headers[1].text = "Content"
-    headers[2].text = "Page No."
+    set_cell_text(headers[0], "S. No.", bold=True, align=WD_ALIGN_PARAGRAPH.CENTER)
+    set_cell_text(headers[1], "Content", bold=True, align=WD_ALIGN_PARAGRAPH.CENTER)
+    set_cell_text(headers[2], "Page No.", bold=True, align=WD_ALIGN_PARAGRAPH.CENTER)
     for cell in headers:
         shade(cell, "D9EAF7")
+    set_table_widths(table, [0.7, 4.9, 0.6])
 
     items = [
         "Abstract",
+        "Synopsis Summary",
         "Introduction",
         "Motivation",
         "Literature Review",
@@ -252,29 +355,31 @@ def index_page(document):
         "Conclusion",
         "Future Scope",
         "References",
-        "Annexure",
+        "List of Abbreviations",
+        "Annexure and Appendix",
     ]
     for index, item in enumerate(items, 1):
         row = table.add_row().cells
-        row[0].text = str(index)
-        row[1].text = item
-        row[2].text = ""
+        set_cell_text(row[0], str(index), align=WD_ALIGN_PARAGRAPH.CENTER)
+        set_cell_text(row[1], item)
+        set_cell_text(row[2], "", align=WD_ALIGN_PARAGRAPH.CENTER)
     document.add_page_break()
 
 
 def comparative_table(document):
-    document.add_paragraph("Table 1: Comparative analysis of current and proposed approaches", style="Heading 3")
+    add_table_title(document, "Table 1: Comparative analysis of current and proposed approaches")
     table = document.add_table(rows=1, cols=5)
     table.style = "Table Grid"
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
     header = table.rows[0].cells
-    header[0].text = "Factor"
-    header[1].text = "Manual Assessment"
-    header[2].text = "Basic Quiz Portal"
-    header[3].text = "Analytics Dashboard"
-    header[4].text = "Proposed System"
+    set_cell_text(header[0], "Factor", bold=True, align=WD_ALIGN_PARAGRAPH.CENTER)
+    set_cell_text(header[1], "Manual Assessment", bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, size=10)
+    set_cell_text(header[2], "Basic Quiz Portal", bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, size=10)
+    set_cell_text(header[3], "Analytics Dashboard", bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, size=10)
+    set_cell_text(header[4], "Proposed System", bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, size=10)
     for cell in header:
         shade(cell, "D9EAF7")
+    set_table_widths(table, [1.35, 1.1, 1.1, 1.25, 1.27])
     rows = [
         ("Score reporting", "Yes", "Yes", "Yes", "Yes"),
         ("Topic-wise diagnosis", "No", "Limited", "Partial", "Yes"),
@@ -288,20 +393,26 @@ def comparative_table(document):
     for values in rows:
         row = table.add_row().cells
         for idx, value in enumerate(values):
-            row[idx].text = value
+            set_cell_text(
+                row[idx],
+                value,
+                size=10,
+                align=WD_ALIGN_PARAGRAPH.CENTER if idx else WD_ALIGN_PARAGRAPH.LEFT,
+            )
 
 
 def modules_table(document):
-    document.add_paragraph("Table 2: Major modules of the proposed system", style="Heading 3")
+    add_table_title(document, "Table 2: Major modules of the proposed system")
     table = document.add_table(rows=1, cols=3)
     table.style = "Table Grid"
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
     header = table.rows[0].cells
-    header[0].text = "Module"
-    header[1].text = "Purpose"
-    header[2].text = "Output"
+    set_cell_text(header[0], "Module", bold=True, align=WD_ALIGN_PARAGRAPH.CENTER)
+    set_cell_text(header[1], "Purpose", bold=True, align=WD_ALIGN_PARAGRAPH.CENTER)
+    set_cell_text(header[2], "Output", bold=True, align=WD_ALIGN_PARAGRAPH.CENTER)
     for cell in header:
         shade(cell, "D9EAF7")
+    set_table_widths(table, [1.65, 2.45, 2.1])
     rows = [
         ("Login and access control", "Handles demo credentials and role-based routing", "Student, teacher, or admin workspace"),
         ("Student dashboard", "Shows personal performance and progress", "Topic cards, trend chart, feedback"),
@@ -314,20 +425,21 @@ def modules_table(document):
     for values in rows:
         row = table.add_row().cells
         for idx, value in enumerate(values):
-            row[idx].text = value
+            set_cell_text(row[idx], value, size=10)
 
 
 def requirement_table(document):
-    document.add_paragraph("Table 3: Functional requirements", style="Heading 3")
+    add_table_title(document, "Table 3: Functional requirements")
     table = document.add_table(rows=1, cols=3)
     table.style = "Table Grid"
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
     header = table.rows[0].cells
-    header[0].text = "Requirement ID"
-    header[1].text = "Requirement"
-    header[2].text = "Description"
+    set_cell_text(header[0], "Requirement ID", bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, size=10)
+    set_cell_text(header[1], "Requirement", bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, size=10)
+    set_cell_text(header[2], "Description", bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, size=10)
     for cell in header:
         shade(cell, "D9EAF7")
+    set_table_widths(table, [1.0, 1.6, 3.65])
     rows = [
         ("FR-1", "User login", "System shall support predefined student, teacher, and admin accounts."),
         ("FR-2", "Quiz attempt", "System shall support mixed mathematics quizzes."),
@@ -341,21 +453,22 @@ def requirement_table(document):
     for values in rows:
         row = table.add_row().cells
         for idx, value in enumerate(values):
-            row[idx].text = value
+            set_cell_text(row[idx], value, size=10)
 
 
 def testing_table(document):
-    document.add_paragraph("Table 4: Testing scenarios and outcomes", style="Heading 3")
+    add_table_title(document, "Table 4: Testing scenarios and outcomes")
     table = document.add_table(rows=1, cols=4)
     table.style = "Table Grid"
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
     header = table.rows[0].cells
-    header[0].text = "Test Case"
-    header[1].text = "Action"
-    header[2].text = "Expected Result"
-    header[3].text = "Status"
+    set_cell_text(header[0], "Test Case", bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, size=10)
+    set_cell_text(header[1], "Action", bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, size=10)
+    set_cell_text(header[2], "Expected Result", bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, size=10)
+    set_cell_text(header[3], "Status", bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, size=10)
     for cell in header:
         shade(cell, "D9EAF7")
+    set_table_widths(table, [0.9, 1.35, 3.25, 0.77])
     rows = [
         ("TC-1", "Student login", "Student dashboard opens correctly", "Passed"),
         ("TC-2", "Mixed quiz execution", "Quiz accepts answers and supports question navigation", "Passed"),
@@ -367,7 +480,39 @@ def testing_table(document):
     for values in rows:
         row = table.add_row().cells
         for idx, value in enumerate(values):
-            row[idx].text = value
+            set_cell_text(row[idx], value, size=10)
+
+
+def abbreviation_table(document):
+    add_table_title(document, "Table 5: List of abbreviations used in the report")
+    table = document.add_table(rows=1, cols=2)
+    table.style = "Table Grid"
+    table.alignment = WD_TABLE_ALIGNMENT.CENTER
+    header = table.rows[0].cells
+    set_cell_text(header[0], "Abbreviation", bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, size=10.5)
+    set_cell_text(header[1], "Full Form", bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, size=10.5)
+    for cell in header:
+        shade(cell, "D9EAF7")
+    set_table_widths(table, [2.0, 4.2])
+    rows = [
+        ("AI", "Artificial Intelligence"),
+        ("ML", "Machine Learning"),
+        ("IoT", "Internet of Things"),
+        ("UI", "User Interface"),
+        ("UX", "User Experience"),
+        ("MCQ", "Multiple Choice Question"),
+        ("CRUD", "Create, Read, Update, Delete"),
+        ("JSON", "JavaScript Object Notation"),
+        ("HTML", "HyperText Markup Language"),
+        ("CSS", "Cascading Style Sheets"),
+        ("JS", "JavaScript"),
+        ("MQTT", "Message Queuing Telemetry Transport"),
+        ("KRMU", "KR Mangalam University"),
+    ]
+    for values in rows:
+        row = table.add_row().cells
+        set_cell_text(row[0], values[0], size=10.5, align=WD_ALIGN_PARAGRAPH.CENTER)
+        set_cell_text(row[1], values[1], size=10.5)
 
 
 def report_body(document):
@@ -412,6 +557,53 @@ def report_body(document):
         document,
         "Keywords: IoT, Learning Analytics, Mathematics Education, Personalized Feedback, Smart "
         "Classroom, Dashboard Analytics, Student Performance Analysis, Educational Data Mining"
+    )
+
+    add_heading_page_break(document, "SYNOPSIS SUMMARY")
+    body(
+        document,
+        f"This combined document contains both the project synopsis and the full final-year "
+        f"project report for \"{PROJECT_TITLE}\". The project is implemented as a browser-based "
+        "smart classroom prototype that analyzes learner performance in mathematics and generates "
+        "personalized feedback through a hardware-free IoT model."
+    )
+    body(
+        document,
+        f"The current deployed build contains {STUDENT_COUNT} student accounts, "
+        f"{TEACHER_COUNT} teacher account, {ADMIN_COUNT} admin account, {QUESTION_COUNT} seeded "
+        f"questions, and {ATTEMPT_COUNT} seeded historical attempts. The mathematical scope covers "
+        "algebra, trigonometry, and calculus. The application is publicly hosted and can be "
+        "opened directly for demonstration."
+    )
+    document.add_heading("Synopsis Highlights", level=2)
+    bullet(document, "Project domain: learning analytics, smart classroom systems, and educational decision support.")
+    bullet(document, "Project type: hardware-free IoT-enabled web application.")
+    bullet(document, "Main roles: student, teacher, and admin.")
+    bullet(document, "Core functions: quiz execution, analytics, repeated-error detection, teacher drill-down, runtime management.")
+    bullet(document, "Technology stack: HTML, CSS, JavaScript, Chart.js, GitHub Pages.")
+    bullet(document, "Public repository and hosted deployment are already available.")
+    document.add_heading("Problem Overview", level=2)
+    body(
+        document,
+        "Traditional mathematics assessment often ends with marks and remarks rather than detailed "
+        "academic diagnosis. Students do not always know which topic is weak, teachers do not "
+        "always get a clear intervention map, and smart classroom ideas often remain disconnected "
+        "from practical academic tools. The proposed project addresses this by treating classroom "
+        "activity as connected data and converting it into chapter-wise insights and feedback."
+    )
+    document.add_heading("Objectives in Brief", level=2)
+    bullet(document, "To create a role-based mathematics learning platform.")
+    bullet(document, "To simulate IoT classroom event flow without physical hardware.")
+    bullet(document, "To calculate topic accuracy, speed, and repeated mistake patterns.")
+    bullet(document, "To generate learner-facing feedback and teacher-facing intervention suggestions.")
+    bullet(document, "To deploy the project publicly for review and presentation.")
+    document.add_heading("Expected Outcome", level=2)
+    body(
+        document,
+        "The expected outcome is a practical, demonstrable smart classroom prototype that helps "
+        "students understand their mathematics weaknesses and helps teachers make data-driven "
+        "academic decisions. The current version is not presented as a full trained ML system; "
+        "instead, it uses explainable rule-based logic with valid future scope for AI/ML extension."
     )
 
     add_heading_page_break(document, "Chapter 1")
@@ -581,10 +773,11 @@ def report_body(document):
     document.add_heading("Implementation Details", level=2)
     body(
         document,
-        "The project is implemented in a flat front-end structure to keep the code understandable "
-        "and easy to present. The root files are index.html, styles.css, and app.js, supported by "
-        "project-motive.html and iot-architecture.html for explanatory pages. The application runs "
-        "locally on XAMPP and is publicly deployed through GitHub Pages."
+        "The project is implemented as an approved-stack architecture with Python Flask "
+        "microservices, a React 18 and D3.js visualization frontend, Docker-based Kafka and "
+        "Cassandra infrastructure, and supporting documentation pages at the repository root. The "
+        "backend is organized into independent services for data collection, processing, feedback "
+        "generation, visualization, and LMS integration."
     )
     body(
         document,
@@ -791,39 +984,39 @@ def report_body(document):
         "role-based access through predefined demo accounts. It also links directly to the "
         "project motive and IoT architecture pages for academic positioning."
     )
-    add_picture_with_caption(document, "student-dashboard.png", "Figure 2: Student dashboard showing mastery and trend analytics")
+    add_picture_with_caption(document, "student-dashboard.png", "Figure 2: Student dashboard showing mastery and trend analytics", page_break_before=True)
     body(
         document,
         "The student dashboard presents average accuracy, strongest topic, repeated mistake count, "
         "a trend line chart, and personalized recommendation cards designed for self-guided improvement."
     )
-    add_picture_with_caption(document, "student-quiz.png", "Figure 3: Student quiz interface with question palette and expected time")
+    add_picture_with_caption(document, "student-quiz.png", "Figure 3: Student quiz interface with question palette and expected time", page_break_before=True)
     body(
         document,
         "The quiz view supports mixed question types, progress navigation, time-tracking, and "
         "visual progress indicators. The interface is designed to feel like an assessment system "
         "rather than a static form."
     )
-    add_picture_with_caption(document, "student-result.png", "Figure 4: Result page with charts, repeated errors, and explanations")
+    add_picture_with_caption(document, "student-result.png", "Figure 4: Result page with charts, repeated errors, and explanations", page_break_before=True)
     body(
         document,
         "The result page is central to the project because it converts a quiz attempt into chapter-"
         "level charts, repeated-error observations, and next-step recommendations."
     )
-    add_picture_with_caption(document, "teacher-dashboard.png", "Figure 5: Teacher dashboard with class analytics and drill-down")
+    add_picture_with_caption(document, "teacher-dashboard.png", "Figure 5: Teacher dashboard with class analytics and drill-down", page_break_before=True)
     body(
         document,
         "The teacher dashboard provides class average, slowest topic, weakest group, performance "
         "distribution, accuracy trends, and selected-student interventions."
     )
-    add_picture_with_caption(document, "admin-dashboard.png", "Figure 6: Admin dashboard for runtime management")
+    add_picture_with_caption(document, "admin-dashboard.png", "Figure 6: Admin dashboard for runtime management", page_break_before=True)
     body(
         document,
         "The admin panel helps demonstrate project completeness by allowing runtime control over "
         "users and questions. This makes the application adaptable during presentation."
     )
-    add_picture_with_caption(document, "project-motive.png", "Figure 7: Project motive page")
-    add_picture_with_caption(document, "iot-architecture.png", "Figure 8: IoT architecture explanation page")
+    add_picture_with_caption(document, "project-motive.png", "Figure 7: Project motive page", page_break_before=True)
+    add_picture_with_caption(document, "iot-architecture.png", "Figure 8: IoT architecture explanation page", page_break_before=True)
 
     add_heading_page_break(document, "Chapter 16")
     document.add_heading("Deployment and Public Hosting", level=2)
@@ -899,25 +1092,86 @@ def report_body(document):
     ]:
         bullet(document, item)
 
-    add_heading_page_break(document, "Annexure")
-    document.add_heading("Annexure I: Project Links", level=2)
+    add_heading_page_break(document, "List of Abbreviations")
+    body(
+        document,
+        "The following abbreviations are used throughout the synopsis and final report for "
+        "technical clarity, academic consistency, and easier reading during project evaluation."
+    )
+    abbreviation_table(document)
+
+    add_heading_page_break(document, "Annexure and Appendix")
+    document.add_heading("Annexure I: Similarity and Plagiarism Certificate Attachment", level=2)
+    body(
+        document,
+        "This section is reserved for attachment of the official similarity report or plagiarism "
+        "certificate generated through the university-approved checking system such as Turnitin, "
+        "Ouriginal, or another department-approved platform. An official plagiarism certificate "
+        "cannot be self-generated inside this report document and should be attached here after "
+        "verification by the student and the department."
+    )
+    bullet(document, f"Student Name: {STUDENT_NAME}")
+    bullet(document, f"Roll Number: {ROLL_NUMBER}")
+    bullet(document, f"Section: {SECTION}")
+    bullet(document, f"Project Title: {PROJECT_TITLE}")
+    bullet(document, f"Projexa Team Id: {PROJEXA_TEAM_ID}")
+    bullet(document, f"University: {UNIVERSITY_NAME}")
+    bullet(document, "Official similarity report status: To be attached after institutional check")
+    body(
+        document,
+        "At the time of final printed submission, the official similarity certificate should be "
+        "inserted immediately after this page so that the report remains academically compliant "
+        "and complete."
+    )
+    add_signature_block(
+        document,
+        [
+            "Student Signature: __________________________",
+            "Date of Similarity Submission: __________________________",
+        ],
+        [
+            "Guide Verification: __________________________",
+            "Department Seal / Approval: __________________________",
+        ],
+    )
+
+    document.add_heading("Annexure II: Project Links", level=2)
     bullet(document, f"GitHub Repository: {REPO_URL}")
     bullet(document, f"Live Project Link: {LIVE_URL}")
-    document.add_heading("Annexure II: Core Project Files", level=2)
-    bullet(document, "index.html - main application and role-based interface")
-    bullet(document, "styles.css - full visual theme and responsive styling")
-    bullet(document, "app.js - seeded data, quiz logic, analytics, charts, and admin control")
-    bullet(document, "project-motive.html - academic positioning page")
-    bullet(document, "iot-architecture.html - IoT architecture explanation page")
-    document.add_heading("Annexure III: Screenshot Archive", level=2)
-    add_picture_with_caption(document, "landing-page.png", "Annexure Figure A1: Landing page")
-    add_picture_with_caption(document, "student-dashboard.png", "Annexure Figure A2: Student dashboard")
-    add_picture_with_caption(document, "student-quiz.png", "Annexure Figure A3: Quiz page")
-    add_picture_with_caption(document, "student-result.png", "Annexure Figure A4: Result page")
-    add_picture_with_caption(document, "teacher-dashboard.png", "Annexure Figure A5: Teacher dashboard")
-    add_picture_with_caption(document, "admin-dashboard.png", "Annexure Figure A6: Admin dashboard")
-    add_picture_with_caption(document, "project-motive.png", "Annexure Figure A7: Project motive page")
-    add_picture_with_caption(document, "iot-architecture.png", "Annexure Figure A8: IoT architecture page")
+    document.add_heading("Annexure III: Core Project Files", level=2)
+    bullet(document, "backend/services/data_collector/app.py - learning-event ingestion service")
+    bullet(document, "backend/services/data_processor/app.py - analytics and learner-summary service")
+    bullet(document, "backend/services/feedback_generator/app.py - personalized feedback generation service")
+    bullet(document, "backend/services/visualization_service/app.py - dashboard data aggregation service")
+    bullet(document, "backend/services/integration_service/app.py - LMS integration service")
+    bullet(document, "frontend-react/src/App.jsx - React 18 and D3.js visualization frontend")
+    bullet(document, "docker-compose.yml - Kafka and Cassandra local infrastructure setup")
+    bullet(document, "notebooks/learning_analytics_exploration.ipynb - exploratory analytics notebook")
+    document.add_heading("Annexure IV: Research Paper / Publication Details", level=2)
+    body(
+        document,
+        "The current project has been documented in a report-ready form that is also suitable for "
+        "conversion into a short academic paper, conference paper, or departmental publication. "
+        "No false claim of publication is made in this report. The details below describe the "
+        "paper version that can be prepared from the implemented system."
+    )
+    bullet(document, f"Proposed Paper Title: {PROJECT_TITLE}")
+    bullet(document, f"Primary Author: {STUDENT_NAME}")
+    bullet(document, "Affiliation: Department of Computer Science and Engineering, School of Engineering and Technology, KR Mangalam University")
+    bullet(document, "Paper Type: Implementation-driven academic project paper")
+    bullet(document, "Current Status: Manuscript-ready project work; not yet formally published")
+    bullet(document, "Suggested Themes: Learning analytics, educational technology, smart classroom systems, IoT-based academic monitoring, personalized feedback")
+    bullet(document, "Possible Publication Route: Department journal, conference proceedings, student innovation journal, or institutional research compendium")
+
+    document.add_heading("Annexure V: Screenshot Archive", level=2)
+    add_picture_with_caption(document, "landing-page.png", "Annexure Figure A1: Landing page", page_break_before=True)
+    add_picture_with_caption(document, "student-dashboard.png", "Annexure Figure A2: Student dashboard", page_break_before=True)
+    add_picture_with_caption(document, "student-quiz.png", "Annexure Figure A3: Quiz page", page_break_before=True)
+    add_picture_with_caption(document, "student-result.png", "Annexure Figure A4: Result page", page_break_before=True)
+    add_picture_with_caption(document, "teacher-dashboard.png", "Annexure Figure A5: Teacher dashboard", page_break_before=True)
+    add_picture_with_caption(document, "admin-dashboard.png", "Annexure Figure A6: Admin dashboard", page_break_before=True)
+    add_picture_with_caption(document, "project-motive.png", "Annexure Figure A7: Project motive page", page_break_before=True)
+    add_picture_with_caption(document, "iot-architecture.png", "Annexure Figure A8: IoT architecture page", page_break_before=True)
 
 
 def main():

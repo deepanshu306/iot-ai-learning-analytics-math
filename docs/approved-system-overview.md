@@ -1,67 +1,58 @@
-# Approved System Overview
+# Final System Overview
 
-This repository now contains an approved-architecture scaffold for the project:
+This repository now contains the final GitHub Pages submission for:
 
 `Automated Learning Analytics and Personalized Feedback System for Mathematics Education`
 
-## Problem Alignment
+## Final Implementation Model
 
-The approved problem statement requires:
+The submitted project is a static React application hosted through GitHub Pages. It does not rely
+on a live backend deployment. Instead, it uses:
 
-- a scalable microservices-based backend
-- personalized feedback for students and instructors
-- LMS integration
-- real-time visualization
-- a stack centered on Python Flask, Apache Kafka, Apache Cassandra, React 18, D3.js, and Jupyter Notebook
+- seeded student, teacher, and admin accounts
+- seeded LMS-style mathematics learning events
+- client-side analytics logic
+- rule-based personalized feedback
+- session-based runtime updates for admin actions
 
-The current repo now includes the following aligned structure:
+## Final Repository Focus
 
-- `backend/services/data_collector`
-- `backend/services/data_processor`
-- `backend/services/feedback_generator`
-- `backend/services/visualization_service`
-- `backend/services/integration_service`
-- `frontend-react`
-- `notebooks/learning_analytics_exploration.ipynb`
-- `docker-compose.yml`
+The main implementation paths are:
 
-## Architecture Mapping
+- `frontend-react/`
+- `react-app/`
+- `index.html`
+- `project-motive.html`
+- `iot-architecture.html`
+- `scripts/generate_final_report.py`
 
-1. `Data Collector Service`
-   Accepts learning events from LMS or mathematics platforms and publishes them toward Kafka topics.
-
-2. `Data Processor Service`
-   Converts raw events into learner summaries, topic mastery, and risk bands.
-
-3. `Feedback Generator Service`
-   Produces role-specific recommendations for students and instructors.
-
-4. `Visualization Service`
-   Serves aggregated dashboard data to a React 18 + D3.js frontend.
-
-5. `Integration Service`
-   Manages LMS sync status and connector-level orchestration.
-
-## Important Positioning
-
-The old static browser prototype has been removed from the main project structure. The repository is
-now positioned around the approved Flask + React microservices architecture, while root HTML pages
-serve only as lightweight documentation and project overview pages.
-
-## Current Submission Scope
-
-The implemented user-facing roles in this submission are:
+## Final User Roles
 
 - Student
 - Teacher
 - Admin
 
-A parent-facing page is intentionally excluded from the current submission scope.
+Parent-facing pages are not part of this version.
 
-## Suggested Next Build Steps
+## Final Feature Summary
 
-1. Install backend dependencies with `pip install -r backend/requirements.txt`
-2. Install frontend dependencies with `npm install` inside `frontend-react`
-3. Start Kafka and Cassandra with `docker compose up -d`
-4. Run each Flask service on its assigned port
-5. Start the React visualization frontend with `npm run dev`
+1. Student personalized feedback page
+2. Teacher analytics and learner drill-down page
+3. Admin management page
+4. Session-backed runtime event simulation
+5. Public hosting through GitHub Pages
+
+## Local Run
+
+```bash
+cd frontend-react
+npm install
+npm run dev
+```
+
+## Build For GitHub Pages
+
+```bash
+cd frontend-react
+npm run build
+```

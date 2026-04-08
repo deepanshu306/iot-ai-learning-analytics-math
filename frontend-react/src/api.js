@@ -1,12 +1,6 @@
-const SERVICES = {
-  collector: "http://localhost:5001",
-  processor: "http://localhost:5002",
-  feedback: "http://localhost:5003",
-  visualization: "http://localhost:5004",
-  integration: "http://localhost:5005"
-};
+const STATIC_STATE_KEY = "learning-analytics-static-state-v1";
 
-const FALLBACK_STATE = {
+const SEED_STATE = {
   users: [
     {
       id: "user-stu-001",
@@ -52,21 +46,18 @@ const FALLBACK_STATE = {
       id: "stu-001",
       name: "Aanya Sharma",
       gradeLevel: "B.Tech Final Year",
-      parentName: "Ritika Sharma",
       lmsUserId: "LMS-1001"
     },
     {
       id: "stu-002",
       name: "Rohan Mehta",
       gradeLevel: "B.Tech Final Year",
-      parentName: "Sanjay Mehta",
       lmsUserId: "LMS-1002"
     },
     {
       id: "stu-003",
       name: "Kavya Iyer",
       gradeLevel: "B.Tech Final Year",
-      parentName: "Meera Iyer",
       lmsUserId: "LMS-1003"
     }
   ],
@@ -211,6 +202,49 @@ const FALLBACK_STATE = {
   ]
 };
 
+let cachedState = null;
+
+function clone(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function readStaticState() {
+  if (typeof window === "undefined") {
+    return clone(SEED_STATE);
+  }
+  try {
+    const raw = window.sessionStorage.getItem(STATIC_STATE_KEY);
+    if (!raw) {
+      return clone(SEED_STATE);
+    }
+    return JSON.parse(raw);
+  } catch (_error) {
+    return clone(SEED_STATE);
+  }
+}
+
+function writeStaticState(state) {
+  cachedState = clone(state);
+  if (typeof window === "undefined") {
+    return;
+  }
+  window.sessionStorage.setItem(STATIC_STATE_KEY, JSON.stringify(state));
+}
+
+function getState() {
+  if (!cachedState) {
+    cachedState = readStaticState();
+  }
+  return cachedState;
+}
+
+function updateState(mutator) {
+  const nextState = clone(getState());
+  mutator(nextState);
+  writeStaticState(nextState);
+  return nextState;
+}
+
 function safeMean(values) {
   return values.length ? Number((values.reduce((sum, value) => sum + value, 0) / values.length).toFixed(1)) : 0;
 }
@@ -229,92 +263,85 @@ function scoreBand(score) {
 }
 
 function publicUser(user) {
-  const clone = { ...user };
-  delete clone.password;
-  return clone;
+  const cloneUser = { ...user };
+  delete cloneUser.password;
+  return cloneUser;
 }
 
-function pipelineFallback() {
+function staticRuntime() {
   return {
     messaging: {
-      technology: "Apache Kafka",
-      mode: "simulated",
-      detail: "Events are mirrored through an in-browser demo flow when backend services are unavailable.",
-      target: "learning-events",
-      connection: "localhost:9092"
+      technology: "In-Browser Event Queue",
+      mode: "static",
+      detail: "Learning events are processed directly in the browser so the project runs on GitHub Pages without a backend server.",
+      target: "session analytics state",
+      connection: "sessionStorage"
     },
     storage: {
-      technology: "Apache Cassandra",
-      mode: "simulated",
-      detail: "Learner events are kept in session fallback state when backend services are unavailable.",
-      target: "learning_analytics",
-      connection: "localhost"
+      technology: "Browser Session Storage",
+      mode: "static",
+      detail: "Runtime users, connector updates, and newly ingested events are preserved for the active browser session.",
+      target: "learning-analytics-static-state-v1",
+      connection: "sessionStorage"
     }
   };
 }
 
-function serviceTopologyFallback() {
-  const pipeline = pipelineFallback();
+function serviceTopology() {
   return [
     {
-      name: "Data Collector Service",
-      stack: "Python Flask",
-      purpose: "Collect LMS and platform activity as learning events.",
+      name: "Seed Data Layer",
+      stack: "Static JavaScript data",
+      purpose: "Provides demo users, students, connectors, and mathematics learning events.",
       status: "active",
-      mode: pipeline.messaging.mode
+      mode: "seeded"
     },
     {
-      name: "Data Processor Service",
-      stack: "Python Flask",
-      purpose: "Normalize events and compute learner-level insights.",
+      name: "Analytics Engine",
+      stack: "Client-side rules",
+      purpose: "Computes topic mastery, trends, class averages, and student risk levels in the browser.",
       status: "active",
       mode: "analytics"
     },
     {
-      name: "Feedback Generator Service",
-      stack: "Python Flask",
-      purpose: "Create student and instructor feedback streams.",
+      name: "Feedback Engine",
+      stack: "Rule-based personalization",
+      purpose: "Generates student guidance and teacher interventions from computed performance summaries.",
       status: "active",
       mode: "recommendation"
     },
     {
-      name: "Visualization Service",
+      name: "Visualization Layer",
       stack: "React 18 + D3.js",
-      purpose: "Render role-based dashboards for students, teachers, and administrators.",
+      purpose: "Renders separate student, teacher, and admin dashboards for GitHub Pages hosting.",
       status: "active",
       mode: "dashboard"
     },
     {
-      name: "Integration Service",
-      stack: "Python Flask",
-      purpose: "Connect Moodle, Canvas, and Google Classroom workflows.",
+      name: "Admin Control Layer",
+      stack: "Session-backed state manager",
+      purpose: "Handles user creation, connector updates, and event ingestion without any server dependency.",
       status: "active",
-      mode: "integration"
+      mode: "management"
     },
     {
-      name: "Messaging Layer",
-      stack: "Apache Kafka",
-      purpose: pipeline.messaging.detail,
-      status: pipeline.messaging.mode,
-      mode: pipeline.messaging.mode
-    },
-    {
-      name: "Storage Layer",
-      stack: "Apache Cassandra",
-      purpose: pipeline.storage.detail,
-      status: pipeline.storage.mode,
-      mode: pipeline.storage.mode
+      name: "Hosting Layer",
+      stack: "GitHub Pages",
+      purpose: "Publishes the project as a static web application through the repository.",
+      status: "active",
+      mode: "hosting"
     }
   ];
 }
 
-function fallbackStudentSummary(studentId) {
-  const student = FALLBACK_STATE.students.find((item) => item.id === studentId);
+function studentSummary(studentId) {
+  const state = getState();
+  const student = state.students.find((item) => item.id === studentId);
   if (!student) {
     return null;
   }
 
-  const events = FALLBACK_STATE.events
+  const events = state.events
     .filter((item) => item.studentId === studentId)
     .sort((left, right) => left.timestamp.localeCompare(right.timestamp));
 
@@ -324,11 +351,14 @@ function fallbackStudentSummary(studentId) {
       accumulator[event.topic].push(event.scorePct);
       return accumulator;
     }, {})
-  ).map(([topic, scores]) => ({
-    topic,
-    score: safeMean(scores),
-    status: scoreBand(safeMean(scores))
-  }));
+  ).map(([topic, scores]) => {
+    const score = safeMean(scores);
+    return {
+      topic,
+      score,
+      status: scoreBand(score)
+    };
+  });
 
   const averageScore = safeMean(events.map((item) => item.scorePct));
   const latestScore = events.length ? events[events.length - 1].scorePct : 0;
@@ -337,6 +367,7 @@ function fallbackStudentSummary(studentId) {
   const weakTopics = topicScores.filter((item) => item.score < 70).map((item) => item.topic);
   const orderedTopics = [...topicScores].sort((left, right) => left.score - right.score);
   const recommendedPath = [];
+
   orderedTopics.slice(0, 2).forEach((item) => {
     if (item.score < 60) {
       recommendedPath.push(`Assign remedial ${item.topic.toLowerCase()} practice with guided examples.`);
@@ -344,10 +375,9 @@ function fallbackStudentSummary(studentId) {
       recommendedPath.push(`Schedule targeted revision tasks for ${item.topic.toLowerCase()} before the next assessment.`);
     }
   });
+
   if (orderedTopics.length && orderedTopics[orderedTopics.length - 1].score >= 85) {
-    recommendedPath.push(
-      `Promote ${orderedTopics[orderedTopics.length - 1].topic.toLowerCase()} to the advanced-learning pathway.`
-    );
+    recommendedPath.push(`Promote ${orderedTopics[orderedTopics.length - 1].topic.toLowerCase()} to the advanced-learning pathway.`);
   }
 
   return {
@@ -366,11 +396,12 @@ function fallbackStudentSummary(studentId) {
   };
 }
 
-function fallbackFeedback(studentId) {
-  const summary = fallbackStudentSummary(studentId);
+function feedbackBundle(studentId) {
+  const summary = studentSummary(studentId);
   if (!summary) {
     return null;
   }
+
   return {
     studentId,
     studentName: summary.student.name,
@@ -387,9 +418,11 @@ function fallbackFeedback(studentId) {
   };
 }
 
-function fallbackClassOverview() {
-  const studentSummaries = FALLBACK_STATE.students.map((student) => fallbackStudentSummary(student.id)).filter(Boolean);
+function classOverview() {
+  const state = getState();
+  const studentSummaries = state.students.map((student) => studentSummary(student.id)).filter(Boolean);
   const topicMap = {};
+
   studentSummaries.forEach((summary) => {
     summary.topicMastery.forEach((item) => {
       topicMap[item.topic] = topicMap[item.topic] || [];
@@ -401,7 +434,7 @@ function fallbackClassOverview() {
     totalStudents: studentSummaries.length,
     averageScore: safeMean(studentSummaries.map((item) => item.averageScore)),
     highRiskStudents: studentSummaries.filter((item) => item.riskLevel === "high").length,
-    connectorsOnline: FALLBACK_STATE.connectors.filter((item) => item.status === "connected").length,
+    connectorsOnline: state.connectors.filter((item) => item.status === "connected").length,
     studentOptions: studentSummaries.map((summary) => ({ id: summary.student.id, name: summary.student.name })),
     studentSnapshots: studentSummaries.map((summary) => ({
       studentId: summary.student.id,
@@ -418,82 +451,28 @@ function fallbackClassOverview() {
       { label: "Moderate", count: studentSummaries.filter((item) => item.riskLevel === "moderate").length },
       { label: "Low", count: studentSummaries.filter((item) => item.riskLevel === "low").length }
     ],
-    serviceTopology: serviceTopologyFallback()
+    serviceTopology: serviceTopology()
   };
-}
-
-function fallbackTeacherDashboard(studentId) {
-  const overview = fallbackClassOverview();
-  const selectedId = studentId || overview.studentOptions[0]?.id;
-  return {
-    overview,
-    selectedStudent: fallbackStudentSummary(selectedId),
-    selectedFeedback: fallbackFeedback(selectedId),
-    connectors: [...FALLBACK_STATE.connectors],
-    pipeline: pipelineFallback()
-  };
-}
-
-function fallbackAdminDashboard() {
-  return {
-    counts: {
-      users: FALLBACK_STATE.users.length,
-      students: FALLBACK_STATE.users.filter((user) => user.role === "student").length,
-      teachers: FALLBACK_STATE.users.filter((user) => user.role === "teacher").length,
-      admins: FALLBACK_STATE.users.filter((user) => user.role === "admin").length,
-      events: FALLBACK_STATE.events.length,
-      connectedLms: FALLBACK_STATE.connectors.filter((item) => item.status === "connected").length
-    },
-    users: FALLBACK_STATE.users.map(publicUser),
-    connectors: [...FALLBACK_STATE.connectors],
-    recentEvents: [...FALLBACK_STATE.events].reverse().slice(0, 8),
-    pipeline: pipelineFallback(),
-    serviceTopology: serviceTopologyFallback()
-  };
-}
-
-async function requestJson(url, options) {
-  try {
-    const response = await fetch(url, options);
-    if (!response.ok) {
-      return null;
-    }
-    return await response.json();
-  } catch (_error) {
-    return null;
-  }
 }
 
 export async function login(email, password) {
-  const payload = await requestJson(`${SERVICES.integration}/api/auth/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password })
-  });
-  if (payload) {
-    return { ...payload, source: "backend" };
-  }
-
-  const user = FALLBACK_STATE.users.find(
+  const user = getState().users.find(
     (item) => item.email.toLowerCase() === email.toLowerCase() && item.password === password
   );
+
   if (!user) {
     return null;
   }
 
   return {
-    token: `fallback-token-${user.id}`,
+    token: `static-token-${user.id}`,
     user: publicUser(user),
-    source: "fallback"
+    source: "github-pages-static"
   };
 }
 
 export async function fetchDemoAccounts() {
-  const payload = await requestJson(`${SERVICES.integration}/api/auth/demo-accounts`);
-  if (payload?.accounts) {
-    return payload.accounts;
-  }
-  return FALLBACK_STATE.users.map((user) => ({
+  return getState().users.map((user) => ({
     role: user.role,
     email: user.email,
     password: user.password,
@@ -502,93 +481,98 @@ export async function fetchDemoAccounts() {
 }
 
 export async function fetchStudentDashboard(studentId) {
-  const summary = await requestJson(`${SERVICES.processor}/api/analytics/students/${studentId}/dashboard`);
-  const feedback = await requestJson(`${SERVICES.feedback}/api/feedback/students/${studentId}`);
-  if (summary && feedback) {
-    return { ...summary, feedback, source: "backend" };
-  }
-
   return {
-    summary: fallbackStudentSummary(studentId),
-    feedback: fallbackFeedback(studentId),
-    pipeline: pipelineFallback(),
-    source: "fallback"
+    summary: studentSummary(studentId),
+    feedback: feedbackBundle(studentId),
+    pipeline: staticRuntime(),
+    source: "github-pages-static"
   };
 }
 
 export async function fetchTeacherDashboard(studentId) {
-  const payload = await requestJson(
-    `${SERVICES.visualization}/api/dashboard/teacher${studentId ? `?student_id=${studentId}` : ""}`
-  );
-  if (payload) {
-    return { ...payload, source: "backend" };
-  }
-  return { ...fallbackTeacherDashboard(studentId), source: "fallback" };
+  const overview = classOverview();
+  const selectedId = studentId || overview.studentOptions[0]?.id;
+
+  return {
+    overview,
+    selectedStudent: studentSummary(selectedId),
+    selectedFeedback: feedbackBundle(selectedId),
+    connectors: [...getState().connectors],
+    pipeline: staticRuntime(),
+    source: "github-pages-static"
+  };
 }
 
 export async function fetchAdminDashboard() {
-  const payload = await requestJson(`${SERVICES.integration}/api/admin/dashboard`);
-  if (payload) {
-    return { ...payload, source: "backend" };
-  }
-  return { ...fallbackAdminDashboard(), source: "fallback" };
+  const state = getState();
+  return {
+    counts: {
+      users: state.users.length,
+      students: state.users.filter((user) => user.role === "student").length,
+      teachers: state.users.filter((user) => user.role === "teacher").length,
+      admins: state.users.filter((user) => user.role === "admin").length,
+      events: state.events.length,
+      connectedLms: state.connectors.filter((item) => item.status === "connected").length
+    },
+    users: state.users.map(publicUser),
+    connectors: [...state.connectors],
+    recentEvents: [...state.events].reverse().slice(0, 8),
+    pipeline: staticRuntime(),
+    serviceTopology: serviceTopology(),
+    source: "github-pages-static"
+  };
 }
 
 export async function createUser(payload) {
-  const response = await requestJson(`${SERVICES.integration}/api/admin/users`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  });
-  if (response?.user) {
-    return { ...response.user, source: "backend" };
-  }
-
-  if (FALLBACK_STATE.users.some((user) => user.email.toLowerCase() === payload.email.toLowerCase())) {
+  const state = getState();
+  if (state.users.some((user) => user.email.toLowerCase() === payload.email.toLowerCase())) {
     throw new Error("duplicate_email");
   }
 
-  const user = {
-    id: `fallback-user-${Date.now()}`,
-    role: payload.role,
-    name: payload.name,
-    email: payload.email.toLowerCase(),
-    password: payload.password,
-    studentId: payload.role === "student" ? `stu-${Date.now()}` : undefined
-  };
-  FALLBACK_STATE.users.push(user);
-  if (payload.role === "student") {
-    FALLBACK_STATE.students.push({
-      id: user.studentId,
+  let createdUser;
+  updateState((draft) => {
+    createdUser = {
+      id: `static-user-${Date.now()}`,
+      role: payload.role,
       name: payload.name,
-      gradeLevel: payload.gradeLevel || "B.Tech Final Year",
-      parentName: payload.parentName || "Not Assigned",
-      lmsUserId: payload.lmsUserId || `LMS-${Date.now()}`
-    });
-  }
-  return { ...publicUser(user), source: "fallback" };
+      email: payload.email.toLowerCase(),
+      password: payload.password,
+      studentId: payload.role === "student" ? `stu-${Date.now()}` : undefined
+    };
+
+    draft.users.push(createdUser);
+
+    if (payload.role === "student") {
+      draft.students.push({
+        id: createdUser.studentId,
+        name: payload.name,
+        gradeLevel: payload.gradeLevel || "B.Tech Final Year",
+        lmsUserId: payload.lmsUserId || `LMS-${Date.now()}`
+      });
+    }
+  });
+
+  return { ...publicUser(createdUser), source: "github-pages-static" };
 }
 
 export async function updateConnectorStatus(connectorName, updates) {
-  const payload = await requestJson(`${SERVICES.integration}/api/admin/connectors/${encodeURIComponent(connectorName)}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(updates)
-  });
-  if (payload?.connector) {
-    return { ...payload.connector, source: "backend" };
-  }
+  let updatedConnector = null;
 
-  const connector = FALLBACK_STATE.connectors.find((item) => item.name === connectorName);
-  if (!connector) {
-    throw new Error("connector_not_found");
-  }
-  Object.assign(connector, updates);
-  return { ...connector, source: "fallback" };
+  updateState((draft) => {
+    const connector = draft.connectors.find((item) => item.name === connectorName);
+    if (!connector) {
+      throw new Error("connector_not_found");
+    }
+    Object.assign(connector, updates);
+    updatedConnector = { ...connector };
+  });
+
+  return { ...updatedConnector, source: "github-pages-static" };
 }
 
 export async function ingestEvent(payload) {
   const event = {
+    eventId: `evt-runtime-${Date.now()}`,
     ...payload,
     scorePct: Number(payload.scorePct),
     timeSpentMin: Number(payload.timeSpentMin),
@@ -596,36 +580,22 @@ export async function ingestEvent(payload) {
     hintsUsed: Number(payload.hintsUsed || 0)
   };
 
-  const response = await requestJson(`${SERVICES.collector}/api/events`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(event)
+  updateState((draft) => {
+    draft.events.push(event);
   });
-  if (response?.event) {
-    return { ...response, source: "backend" };
-  }
 
-  const fallbackEvent = {
-    eventId: `evt-runtime-${Date.now()}`,
-    ...event
-  };
-  FALLBACK_STATE.events.push(fallbackEvent);
   return {
-    event: fallbackEvent,
-    messaging: pipelineFallback().messaging,
-    storage: pipelineFallback().storage,
-    source: "fallback"
+    event,
+    messaging: staticRuntime().messaging,
+    storage: staticRuntime().storage,
+    source: "github-pages-static"
   };
 }
 
 export async function fetchSystemRuntime() {
-  const payload = await requestJson(`${SERVICES.integration}/api/system/runtime`);
-  if (payload) {
-    return { ...payload, source: "backend" };
-  }
   return {
-    pipeline: pipelineFallback(),
-    services: serviceTopologyFallback(),
-    source: "fallback"
+    pipeline: staticRuntime(),
+    services: serviceTopology(),
+    source: "github-pages-static"
   };
 }

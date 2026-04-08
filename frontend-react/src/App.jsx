@@ -175,8 +175,9 @@ function StatusPill({ children, tone = "neutral" }) {
 }
 
 function SourceChip({ source }) {
-  const tone = source === "backend" ? "connected" : "pilot";
-  return <StatusPill tone={tone}>Data source: {source}</StatusPill>;
+  const tone = source === "github-pages-static" ? "connected" : "pilot";
+  const label = source === "github-pages-static" ? "GitHub Pages static" : source;
+  return <StatusPill tone={tone}>Mode: {label}</StatusPill>;
 }
 
 function AppHeader({ session, onLogout }) {
@@ -289,9 +290,9 @@ function LoginPage({ onLogin }) {
             <p className="eyebrow">Role-based access</p>
             <h1>Login to Student, Teacher, or Admin workspace.</h1>
             <p className="lead">
-              This version includes role-based login, dedicated student, teacher, and admin pages,
-              Flask service integration, and a clearly justified simulated Kafka and Cassandra
-              workflow when backend services are unavailable.
+              This final version is a GitHub Pages-ready static React project with role-based login,
+              dedicated student, teacher, and admin pages, seeded mathematics analytics data, and
+              session-based runtime simulation for new users, LMS updates, and learning events.
             </p>
             <div className="hero-links">
               <a href="../project-motive.html">Project Motive</a>
@@ -303,8 +304,8 @@ function LoginPage({ onLogin }) {
             <span>Student feedback page</span>
             <span>Teacher analytics page</span>
             <span>Admin management page</span>
-            <span>Flask services</span>
-            <span>Kafka/Cassandra simulation</span>
+            <span>GitHub Pages hosting</span>
+            <span>Session-based simulation</span>
           </div>
         </div>
 
@@ -458,20 +459,20 @@ function StudentPage({ session, onLogout }) {
           <div className="section-heading">
             <div>
               <p className="eyebrow">Pipeline mode</p>
-              <h2>Messaging and storage workflow</h2>
+              <h2>Static runtime workflow</h2>
             </div>
           </div>
           <div className="stack-info">
             <article className="stack-card">
               <strong>{dashboard.pipeline.messaging.technology}</strong>
-              <StatusPill tone={dashboard.pipeline.messaging.mode === "configured" ? "connected" : "pilot"}>
+              <StatusPill tone={dashboard.pipeline.messaging.mode === "static" ? "connected" : "pilot"}>
                 {dashboard.pipeline.messaging.mode}
               </StatusPill>
               <p>{dashboard.pipeline.messaging.detail}</p>
             </article>
             <article className="stack-card">
               <strong>{dashboard.pipeline.storage.technology}</strong>
-              <StatusPill tone={dashboard.pipeline.storage.mode === "configured" ? "connected" : "pilot"}>
+              <StatusPill tone={dashboard.pipeline.storage.mode === "static" ? "connected" : "pilot"}>
                 {dashboard.pipeline.storage.mode}
               </StatusPill>
               <p>{dashboard.pipeline.storage.detail}</p>
@@ -772,20 +773,20 @@ function AdminPage({ session, onLogout }) {
           <div className="section-heading">
             <div>
               <p className="eyebrow">Runtime modes</p>
-              <h2>Kafka and Cassandra implementation state</h2>
+              <h2>GitHub Pages implementation state</h2>
             </div>
           </div>
           <div className="stack-info">
             <article className="stack-card">
               <strong>{runtime.pipeline.messaging.technology}</strong>
-              <StatusPill tone={runtime.pipeline.messaging.mode === "configured" ? "connected" : "pilot"}>
+              <StatusPill tone={runtime.pipeline.messaging.mode === "static" ? "connected" : "pilot"}>
                 {runtime.pipeline.messaging.mode}
               </StatusPill>
               <p>{runtime.pipeline.messaging.detail}</p>
             </article>
             <article className="stack-card">
               <strong>{runtime.pipeline.storage.technology}</strong>
-              <StatusPill tone={runtime.pipeline.storage.mode === "configured" ? "connected" : "pilot"}>
+              <StatusPill tone={runtime.pipeline.storage.mode === "static" ? "connected" : "pilot"}>
                 {runtime.pipeline.storage.mode}
               </StatusPill>
               <p>{runtime.pipeline.storage.detail}</p>
@@ -797,7 +798,7 @@ function AdminPage({ session, onLogout }) {
           <div className="section-heading">
             <div>
               <p className="eyebrow">Service topology</p>
-              <h2>Current implementation services</h2>
+              <h2>Current implementation modules</h2>
             </div>
           </div>
           <ServiceGrid services={runtime.services} />

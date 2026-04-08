@@ -1,2 +1,0 @@
-"""Feedback generator service."""
-

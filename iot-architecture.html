@@ -9,7 +9,7 @@
       * { box-sizing: border-box; }
       body {
         margin: 0;
-        background: linear-gradient(180deg, #f8fbff 0%, #edf3fb 100%);
+        background: linear-gradient(180deg, #f8fbff 0%, #edf4ff 100%);
         color: #112033;
       }
       main { max-width: 1120px; margin: 0 auto; padding: 28px 18px 48px; }
@@ -61,71 +61,72 @@
 
       <section class="hero">
         <p class="eyebrow">System Architecture</p>
-        <h1>Approved microservices pipeline for mathematics learning analytics</h1>
+        <h1>Final GitHub Pages architecture for mathematics learning analytics</h1>
         <p>
-          The architecture now centers on Python Flask microservices, Apache Kafka messaging,
-          Apache Cassandra storage, and a React 18 plus D3.js visualization frontend. The old
-          monolithic browser-only demo has been removed from the core implementation path.
+          The final implementation is intentionally simple and static so it can run directly on
+          GitHub Pages. Instead of depending on backend deployment, the project uses seeded LMS-like
+          event data, client-side analytics, rule-based feedback logic, and session-backed runtime
+          updates inside a React 18 application.
         </p>
       </section>
 
       <section class="panel">
         <p class="eyebrow">End-to-End Flow</p>
-        <h2>Service pipeline</h2>
+        <h2>Final system flow</h2>
         <div class="flow">
           <article class="node">
-            <h3>1. LMS and platform inputs</h3>
-            <p>Moodle, Canvas, and online mathematics systems produce learning events.</p>
+            <h3>1. Seeded academic records</h3>
+            <p>Students, LMS connectors, and mathematics learning events are preloaded for demonstration.</p>
           </article>
           <article class="node">
-            <h3>2. Data Collector Service</h3>
-            <p>Ingests events and prepares them for streaming through Kafka topics.</p>
+            <h3>2. Browser analytics layer</h3>
+            <p>Client-side logic computes mastery, trends, class averages, and risk bands.</p>
           </article>
           <article class="node">
-            <h3>3. Processor and Feedback Services</h3>
-            <p>Compute mastery, learner risk, topic weakness, and role-specific recommendations.</p>
+            <h3>3. Feedback generation</h3>
+            <p>Rule-based feedback is created for students and teacher intervention planning.</p>
           </article>
           <article class="node">
-            <h3>4. Visualization and LMS Integration</h3>
-            <p>Expose live dashboards and synchronized academic insights to stakeholders.</p>
+            <h3>4. Role-based dashboards</h3>
+            <p>Student, Teacher, and Admin pages present insights and runtime controls.</p>
           </article>
         </div>
       </section>
 
       <section class="grid">
         <section class="panel">
-          <p class="eyebrow">Core Services</p>
-          <h2>Backend modules</h2>
+          <p class="eyebrow">Core Frontend Modules</p>
+          <h2>Main implemented layers</h2>
           <ul>
-            <li>Data Collector Service</li>
-            <li>Data Processor Service</li>
-            <li>Feedback Generator Service</li>
-            <li>Visualization Service</li>
-            <li>Integration Service</li>
+            <li>Static data layer</li>
+            <li>Analytics computation layer</li>
+            <li>Feedback generation layer</li>
+            <li>Role-based React pages</li>
+            <li>Session-backed runtime state</li>
           </ul>
         </section>
 
         <section class="panel">
-          <p class="eyebrow">Platform Stack</p>
-          <h2>Approved technologies</h2>
+          <p class="eyebrow">Technology Stack</p>
+          <h2>Final technologies used</h2>
           <ul>
-            <li>Python Flask for each microservice</li>
-            <li>Apache Kafka for message-driven event flow</li>
-            <li>Apache Cassandra for scalable persistence</li>
-            <li>React 18 and D3.js for real-time analytics views</li>
-            <li>Jupyter Notebook for exploratory analysis and experimentation</li>
+            <li>React 18 for interface structure</li>
+            <li>D3.js for trend and mastery charts</li>
+            <li>JavaScript for analytics, feedback, and runtime state</li>
+            <li>sessionStorage for temporary runtime persistence</li>
+            <li>GitHub Pages for public hosting</li>
           </ul>
         </section>
       </section>
 
       <section class="panel">
         <p class="eyebrow">Why This Structure</p>
-        <h2>Reason for removing the old root prototype</h2>
+        <h2>Reason for choosing a static final architecture</h2>
         <p>
-          The old root application used plain HTML, CSS, and JavaScript as a single-page prototype.
-          That was useful for early demonstration, but it did not match the approved project
-          language and architecture. The project now uses a structure that directly reflects the
-          approved stack and problem statement.
+          The final structure was simplified so the deployed project exactly matches the hosted
+          result. This avoids the mismatch between a static host and an undeployed backend. The
+          submitted version is therefore easier to run, easier to explain, and easier to defend
+          during project evaluation.
         </p>
       </section>
     </main>

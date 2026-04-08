@@ -9,11 +9,11 @@
       * { box-sizing: border-box; }
       body {
         margin: 0;
-        background: linear-gradient(180deg, #f8fbff 0%, #edf3fb 100%);
+        background: linear-gradient(180deg, #f8fbff 0%, #edf4ff 100%);
         color: #112033;
       }
       main { max-width: 1100px; margin: 0 auto; padding: 28px 18px 48px; }
-      .panel, .hero, .card {
+      .hero, .panel, .card {
         background: rgba(255, 255, 255, 0.96);
         border: 1px solid rgba(148, 163, 184, 0.2);
         box-shadow: 0 18px 48px rgba(15, 23, 42, 0.08);
@@ -52,13 +52,12 @@
 
       <section class="hero">
         <p class="eyebrow">Project Motive</p>
-        <h1>Why this project exists in the approved stack</h1>
+        <h1>Why this project matters</h1>
         <p>
-          The project is meant to solve a real academic problem: mathematics learning platforms
-          generate large amounts of student performance data, but that data rarely becomes useful
-          feedback for students, instructors, and administrators in time to improve outcomes. The motive
-          is to convert disconnected activity logs into structured learning analytics and
-          personalized intervention pathways.
+          Traditional mathematics assessment often ends with marks and rank. This project extends
+          that process into diagnosis, interpretation, and intervention. The motive is to turn
+          raw learning records into understandable analytics and personalized feedback that can be
+          used by students, teachers, and academic coordinators for better learning outcomes.
         </p>
       </section>
 
@@ -67,82 +66,81 @@
           <p class="eyebrow">Problem Description</p>
           <h2>What needs to be solved</h2>
           <p>
-            Online mathematics platforms, LMS systems, and digital assessments continuously produce
-            learner activity data. In most institutions, this data remains fragmented across
-            systems, so neither teachers nor academic administrators get a clear view of concept mastery, repeated
-            mistakes, weak topics, or student risk in real time.
+            Online mathematics practice systems and LMS platforms generate large amounts of learner
+            activity data, but students and teachers often receive only final marks instead of
+            meaningful interpretation. As a result, weak topics, repeated mistakes, and progress
+            trends are not clearly identified in time for improvement.
           </p>
         </section>
 
         <section class="panel">
-          <p class="eyebrow">Approved Objective</p>
-          <h2>What the system must achieve</h2>
+          <p class="eyebrow">Objective</p>
+          <h2>What the final project delivers</h2>
           <p>
-            The system must provide real-time learning analytics and personalized feedback through a
-            scalable and secure microservices architecture. In this implementation it supports
-            role-based feedback for students, instructors, and administrators, integrates with
-            existing LMS platforms, and exposes live visual
-            insights through a modern frontend.
+            The final implementation provides a GitHub Pages-hosted role-based analytics system for
+            mathematics education. It supports student feedback, teacher analytics, and admin
+            management using seeded LMS-style data and session-based runtime simulation, all inside
+            a static React application.
           </p>
         </section>
       </section>
 
       <section class="panel">
-        <p class="eyebrow">Proposed Solution</p>
-        <h2>How the architecture answers the objective</h2>
+        <p class="eyebrow">Implemented Modules</p>
+        <h2>Final submission structure</h2>
         <div class="card-grid">
           <article class="card">
-            <h3>Data Collector Service</h3>
-            <p>Accepts mathematics learning events from online platforms and LMS connectors.</p>
+            <h3>Student Dashboard</h3>
+            <p>Shows topic mastery, performance trend, recent activity, and personalized feedback.</p>
           </article>
           <article class="card">
-            <h3>Data Processor Service</h3>
-            <p>Transforms raw events into topic mastery, trend data, and learner risk summaries.</p>
+            <h3>Teacher Dashboard</h3>
+            <p>Shows class average, risk distribution, topic heatmap, and selected-student drill-down.</p>
           </article>
           <article class="card">
-            <h3>Feedback Generator Service</h3>
-            <p>Builds tailored feedback for students and instructors from the analyzed data.</p>
+            <h3>Admin Dashboard</h3>
+            <p>Supports runtime user creation, LMS connector updates, and simulated event ingestion.</p>
           </article>
           <article class="card">
-            <h3>Visualization Service</h3>
-            <p>Delivers real-time dashboards using React 18 and D3.js.</p>
+            <h3>Analytics Engine</h3>
+            <p>Computes topic mastery, score averages, completion rate, and learner risk from seeded events.</p>
           </article>
           <article class="card">
-            <h3>Integration Service</h3>
-            <p>Coordinates Moodle, Canvas, and similar LMS integration flows.</p>
+            <h3>Feedback Engine</h3>
+            <p>Generates rule-based recommendations for students and teacher intervention notes.</p>
           </article>
           <article class="card">
-            <h3>Kafka + Cassandra</h3>
-            <p>Support event-driven messaging and scalable storage for learner activity streams.</p>
+            <h3>GitHub Pages Deployment</h3>
+            <p>Publishes the final static React application directly from the repository.</p>
           </article>
         </div>
       </section>
 
       <section class="panel">
         <p class="eyebrow">Why It Fits IoT Based</p>
-        <h2>Connected event flow without depending on hardware boards</h2>
+        <h2>Software-only connected learning flow</h2>
         <p>
-          The project qualifies under the IoT-based problem type because it treats LMS and
-          mathematics platform activity as connected event streams moving through a distributed
-          system. The key IoT idea here is not a physical sensor board, but connected data
-          acquisition, message flow, processing, and live monitoring across services.
+          The project is positioned as IoT-based through connected academic event flow rather than
+          physical hardware. LMS updates, learner attempts, connector status, analytics processing,
+          and dashboard monitoring are treated as linked system events inside one hosted platform.
         </p>
         <ul>
-          <li>Multiple platforms act as connected educational endpoints.</li>
-          <li>Kafka models distributed event transmission between services.</li>
-          <li>Cassandra stores large-scale event history for analytics.</li>
-          <li>React and D3 render a monitoring and feedback dashboard in near real time.</li>
+          <li>Mathematics learning platforms act as connected educational endpoints.</li>
+          <li>Seeded LMS-style records simulate continuous academic event generation.</li>
+          <li>The analytics layer centralizes interpretation and feedback generation.</li>
+          <li>The GitHub-hosted dashboard acts as the monitoring and visualization layer.</li>
         </ul>
       </section>
 
       <section class="panel">
-        <p class="eyebrow">Implemented Roles</p>
-        <h2>What is included in this submission</h2>
+        <p class="eyebrow">Submission Scope</p>
+        <h2>What is included in this version</h2>
         <ul>
-          <li>Student page for personalized feedback, topic mastery, and performance trend.</li>
-          <li>Teacher page for class analytics, student drill-down, and LMS connector monitoring.</li>
-          <li>Admin page for runtime user management, connector control, and event ingestion.</li>
-          <li>Parent-facing page is intentionally excluded from the current submission scope.</li>
+          <li>Student page for personalized feedback and topic-wise performance review.</li>
+          <li>Teacher page for class analytics and learner drill-down.</li>
+          <li>Admin page for runtime management and event simulation.</li>
+          <li>Static hosting through GitHub Pages only.</li>
+          <li>Parent-facing page is intentionally excluded from this version.</li>
         </ul>
       </section>
     </main>

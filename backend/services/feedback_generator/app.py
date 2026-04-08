@@ -20,9 +20,21 @@ def create_app():
             return jsonify({"error": "student_not_found"}), 404
         return jsonify(payload)
 
+    @app.get("/api/feedback/teacher/<student_id>")
+    def teacher_feedback(student_id):
+        payload = feedback_bundle(student_id)
+        if not payload:
+            return jsonify({"error": "student_not_found"}), 404
+        return jsonify(
+            {
+                "studentId": student_id,
+                "studentName": payload["studentName"],
+                "feedback": payload["instructorFeedback"],
+            }
+        )
+
     return app
 
 
 if __name__ == "__main__":
     create_app().run(debug=True, port=SERVICE_PORTS["feedback_generator"])
-

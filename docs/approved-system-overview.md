@@ -9,7 +9,7 @@ This repository now contains an approved-architecture scaffold for the project:
 The approved problem statement requires:
 
 - a scalable microservices-based backend
-- personalized feedback for students, instructors, and parents
+- personalized feedback for students and instructors
 - LMS integration
 - real-time visualization
 - a stack centered on Python Flask, Apache Kafka, Apache Cassandra, React 18, D3.js, and Jupyter Notebook
@@ -34,7 +34,7 @@ The current repo now includes the following aligned structure:
    Converts raw events into learner summaries, topic mastery, and risk bands.
 
 3. `Feedback Generator Service`
-   Produces stakeholder-specific recommendations for students, instructors, and parents.
+   Produces role-specific recommendations for students and instructors.
 
 4. `Visualization Service`
    Serves aggregated dashboard data to a React 18 + D3.js frontend.
@@ -47,6 +47,16 @@ The current repo now includes the following aligned structure:
 The old static browser prototype has been removed from the main project structure. The repository is
 now positioned around the approved Flask + React microservices architecture, while root HTML pages
 serve only as lightweight documentation and project overview pages.
+
+## Current Submission Scope
+
+The implemented user-facing roles in this submission are:
+
+- Student
+- Teacher
+- Admin
+
+A parent-facing page is intentionally excluded from the current submission scope.
 
 ## Suggested Next Build Steps
 

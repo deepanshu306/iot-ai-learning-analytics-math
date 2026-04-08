@@ -11,8 +11,8 @@ This repository now aligns with the approved final-year project brief:
 ## Approved Objective
 
 Design and implement a scalable microservices-based system that collects and analyzes student
-learning data from online mathematics platforms, provides personalized feedback to students,
-instructors, and parents, integrates with existing LMS platforms, and supports real-time data
+learning data from online mathematics platforms, provides personalized feedback to students and
+instructors, integrates with existing LMS platforms, and supports real-time data
 visualization.
 
 ## Repository Structure
@@ -57,7 +57,7 @@ implementation structure lives under `backend/` and `frontend-react/`.
 
 - creates personalized student feedback
 - creates instructor intervention guidance
-- creates parent-facing academic monitoring suggestions
+- supports role-specific recommendations for the implemented student and teacher flows
 
 ### `Visualization Service`
 
@@ -74,12 +74,13 @@ implementation structure lives under `backend/` and `frontend-react/`.
 
 The React frontend lives in `frontend-react` and demonstrates:
 
-- real-time learning analytics dashboard layout
-- microservice topology cards
-- LMS connector status
-- learner drill-down
+- role-based login
+- separate student, teacher, and admin pages
+- personalized student feedback
+- teacher analytics and learner drill-down
+- admin user and connector management
 - D3-based topic mastery and trend charts
-- stakeholder-specific feedback blocks
+- clearly justified simulated Kafka and Cassandra workflow when local infrastructure is not running
 
 ## Infrastructure
 
@@ -135,4 +136,6 @@ docker compose up -d
 - The backend and React folders are now the main implementation path.
 - Kafka and Cassandra are represented in configuration and infrastructure setup, while service code
   currently uses development-friendly seeded data so the system stays demo-ready.
+- The current submission implements Student, Teacher, and Admin roles. A parent-facing page is not
+  included in this version.
 - The root HTML pages now provide project overview and academic positioning only.

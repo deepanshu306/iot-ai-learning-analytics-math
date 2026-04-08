@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
+from backend.shared.pipeline import persist_event, pipeline_status, publish_event
 from backend.shared.seed_data import add_runtime_event, get_connectors, get_events
 from backend.shared.settings import CASSANDRA_KEYSPACE, KAFKA_TOPIC_EVENTS, SERVICE_PORTS
 
@@ -11,12 +12,15 @@ def create_app():
 
     @app.get("/health")
     def health():
+        modes = pipeline_status()
         return jsonify(
             {
                 "service": "data_collector",
                 "status": "ok",
                 "publishesTo": KAFKA_TOPIC_EVENTS,
                 "storageSink": CASSANDRA_KEYSPACE,
+                "messaging": modes["messaging"],
+                "storage": modes["storage"],
             }
         )
 
@@ -31,15 +35,18 @@ def create_app():
     @app.post("/api/events")
     def ingest_event():
         payload = request.get_json(silent=True) or {}
-        required = {"eventId", "studentId", "platform", "topic", "scorePct", "timestamp"}
+        required = {"studentId", "platform", "topic", "scorePct", "timestamp"}
         missing = sorted(required - payload.keys())
         if missing:
             return jsonify({"error": "missing_fields", "fields": missing}), 400
         stored = add_runtime_event(payload)
+        messaging = publish_event(stored)
+        storage = persist_event(stored)
         return jsonify(
             {
-                "message": "Event accepted and queued for Kafka publishing in development mode.",
-                "kafkaTopic": KAFKA_TOPIC_EVENTS,
+                "message": "Event accepted and routed through the current messaging and storage workflow.",
+                "messaging": messaging,
+                "storage": storage,
                 "event": stored,
             }
         ), 202
@@ -53,4 +60,3 @@ def create_app():
 
 if __name__ == "__main__":
     create_app().run(debug=True, port=SERVICE_PORTS["data_collector"])
-

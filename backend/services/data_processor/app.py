@@ -1,7 +1,7 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
 
-from backend.shared.analytics import class_overview, student_summary
+from backend.shared.analytics import class_overview, student_summary, student_dashboard_payload, teacher_dashboard_payload
 from backend.shared.settings import SERVICE_PORTS
 
 
@@ -29,9 +29,19 @@ def create_app():
             return jsonify({"error": "student_not_found"}), 404
         return jsonify(payload)
 
+    @app.get("/api/analytics/students/<student_id>/dashboard")
+    def student_dashboard(student_id):
+        payload = student_dashboard_payload(student_id)
+        if not payload:
+            return jsonify({"error": "student_not_found"}), 404
+        return jsonify(payload)
+
+    @app.get("/api/analytics/teacher")
+    def teacher():
+        return jsonify(teacher_dashboard_payload())
+
     return app
 
 
 if __name__ == "__main__":
     create_app().run(debug=True, port=SERVICE_PORTS["data_processor"])
-

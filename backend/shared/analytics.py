@@ -1,7 +1,12 @@
 from collections import defaultdict
 from statistics import mean
 
-from .seed_data import PARENTS, get_connectors, get_events, get_students
+from .pipeline import pipeline_status
+from .seed_data import get_connectors, get_events, get_student, get_students, get_user, get_users
+
+
+def _safe_mean(values):
+    return round(mean(values), 1) if values else 0
 
 
 def _score_band(score):
@@ -36,17 +41,74 @@ def _topic_actions(topic_scores):
     return recommendations
 
 
+def service_topology():
+    modes = pipeline_status()
+    return [
+        {
+            "name": "Data Collector Service",
+            "stack": "Python Flask",
+            "purpose": "Collect LMS and platform activity as learning events.",
+            "status": "active",
+            "mode": modes["messaging"]["mode"],
+        },
+        {
+            "name": "Data Processor Service",
+            "stack": "Python Flask",
+            "purpose": "Normalize events and compute learner-level insights.",
+            "status": "active",
+            "mode": "analytics",
+        },
+        {
+            "name": "Feedback Generator Service",
+            "stack": "Python Flask",
+            "purpose": "Create student and instructor feedback streams.",
+            "status": "active",
+            "mode": "recommendation",
+        },
+        {
+            "name": "Visualization Service",
+            "stack": "React 18 + D3.js",
+            "purpose": "Render role-based dashboards for students, teachers, and administrators.",
+            "status": "active",
+            "mode": "dashboard",
+        },
+        {
+            "name": "Integration Service",
+            "stack": "Python Flask",
+            "purpose": "Connect Moodle, Canvas, and Google Classroom workflows.",
+            "status": "active",
+            "mode": "integration",
+        },
+        {
+            "name": "Messaging Layer",
+            "stack": "Apache Kafka",
+            "purpose": modes["messaging"]["detail"],
+            "status": modes["messaging"]["mode"],
+            "mode": modes["messaging"]["mode"],
+        },
+        {
+            "name": "Storage Layer",
+            "stack": "Apache Cassandra",
+            "purpose": modes["storage"]["detail"],
+            "status": modes["storage"]["mode"],
+            "mode": modes["storage"]["mode"],
+        },
+    ]
+
+
 def student_events(student_id):
-    return [event for event in get_events() if event["studentId"] == student_id]
+    return sorted(
+        [event for event in get_events() if event["studentId"] == student_id],
+        key=lambda item: item["timestamp"],
+    )
 
 
 def student_summary(student_id):
-    students = {student["id"]: student for student in get_students()}
-    student = students.get(student_id)
+    student = get_student(student_id)
     if not student:
         return None
 
-    events = sorted(student_events(student_id), key=lambda item: item["timestamp"])
+    events = student_events(student_id)
     if not events:
         return {
             "student": student,
@@ -58,30 +120,26 @@ def student_summary(student_id):
             "topicMastery": [],
             "trend": [],
             "recommendedPath": [],
+            "recentEvents": [],
+            "sources": [],
         }
 
     topic_groups = defaultdict(list)
     for event in events:
         topic_groups[event["topic"]].append(event["scorePct"])
 
-    topic_mastery = []
-    topic_scores = {}
-    for topic, scores in topic_groups.items():
-        score = round(mean(scores), 1)
-        topic_scores[topic] = score
-        topic_mastery.append(
-            {
-                "topic": topic,
-                "score": score,
-                "status": _score_band(score),
-            }
-        )
+    topic_scores = {topic: _safe_mean(scores) for topic, scores in topic_groups.items()}
+    topic_mastery = [
+        {"topic": topic, "score": score, "status": _score_band(score)}
+        for topic, score in sorted(topic_scores.items())
+    ]
 
-    average_score = round(mean(event["scorePct"] for event in events), 1)
+    average_score = _safe_mean([event["scorePct"] for event in events])
     latest_score = events[-1]["scorePct"]
-    average_time = round(mean(event["timeSpentMin"] for event in events), 1)
-    completion_rate = round(mean(event["completionRate"] for event in events) * 100, 1)
+    average_time = _safe_mean([event["timeSpentMin"] for event in events])
+    completion_rate = _safe_mean([event["completionRate"] * 100 for event in events])
 
+    recent_events = list(reversed(events[-5:]))
     return {
         "student": student,
         "averageScore": average_score,
@@ -89,78 +147,11 @@ def student_summary(student_id):
         "averageTimeMinutes": average_time,
         "completionRate": completion_rate,
         "riskLevel": _risk_level(average_score),
-        "topicMastery": sorted(topic_mastery, key=lambda item: item["topic"]),
-        "trend": [
-            {
-                "label": event["timestamp"][:10],
-                "score": event["scorePct"],
-            }
-            for event in events
-        ],
+        "topicMastery": topic_mastery,
+        "trend": [{"label": event["timestamp"][:10], "score": event["scorePct"]} for event in events],
         "recommendedPath": _topic_actions(topic_scores),
+        "recentEvents": recent_events,
         "sources": sorted({event["platform"] for event in events}),
-    }
-
-
-def class_overview():
-    students = get_students()
-    summaries = [student_summary(student["id"]) for student in students]
-    valid_summaries = [summary for summary in summaries if summary]
-    topic_scores = defaultdict(list)
-    for summary in valid_summaries:
-        for topic in summary["topicMastery"]:
-            topic_scores[topic["topic"]].append(topic["score"])
-
-    return {
-        "totalStudents": len(students),
-        "averageScore": round(mean(summary["averageScore"] for summary in valid_summaries), 1),
-        "highRiskStudents": sum(summary["riskLevel"] == "high" for summary in valid_summaries),
-        "connectorsOnline": sum(item["status"] == "connected" for item in get_connectors()),
-        "studentOptions": [
-            {"id": summary["student"]["id"], "name": summary["student"]["name"]}
-            for summary in valid_summaries
-        ],
-        "topicHeatmap": [
-            {
-                "topic": topic,
-                "score": round(mean(scores), 1),
-            }
-            for topic, scores in sorted(topic_scores.items())
-        ],
-        "distribution": [
-            {
-                "label": label.replace("_", " ").title(),
-                "count": sum(summary["riskLevel"] == label for summary in valid_summaries),
-            }
-            for label in ["high", "moderate", "low"]
-        ],
-        "serviceTopology": [
-            {
-                "name": "Data Collector Service",
-                "stack": "Python Flask + Kafka Producer",
-                "purpose": "Collect LMS and platform activity as learning events.",
-            },
-            {
-                "name": "Data Processor Service",
-                "stack": "Python Flask + Analytics Rules",
-                "purpose": "Normalize events and compute learner-level insights.",
-            },
-            {
-                "name": "Feedback Generator Service",
-                "stack": "Python Flask + Recommendation Rules",
-                "purpose": "Create student, instructor, and parent feedback streams.",
-            },
-            {
-                "name": "Visualization Service",
-                "stack": "React 18 + D3.js",
-                "purpose": "Render live analytics dashboards for all stakeholders.",
-            },
-            {
-                "name": "Integration Service",
-                "stack": "Python Flask + LMS Connectors",
-                "purpose": "Connect Moodle, Canvas, and Google Classroom workflows.",
-            },
-        ],
     }
 
 
@@ -170,8 +161,6 @@ def feedback_bundle(student_id):
         return None
 
     weak_topics = [item["topic"] for item in summary["topicMastery"] if item["score"] < 70]
-    parent_record = next((item for item in PARENTS if item["studentId"] == student_id), None)
-    parent_name = parent_record["name"] if parent_record else "Parent"
     return {
         "studentId": student_id,
         "studentName": summary["student"]["name"],
@@ -185,23 +174,109 @@ def feedback_bundle(student_id):
             "Use mastery trends to assign differentiated practice sets.",
             "Escalate low-performing topics to live instructor intervention when two consecutive assessments fall below 60%.",
         ],
-        "parentFeedback": [
-            f"{parent_name} should monitor weekly completion consistency for {summary['student']['name']}.",
-            f"The latest recorded mathematics score is {summary['latestScore']}%.",
-            "Encourage a fixed revision schedule and concept recap before the next class test.",
+    }
+
+
+def class_overview():
+    students = get_students()
+    summaries = [student_summary(student["id"]) for student in students]
+    valid_summaries = [summary for summary in summaries if summary]
+    topic_scores = defaultdict(list)
+    for summary in valid_summaries:
+        for topic in summary["topicMastery"]:
+            topic_scores[topic["topic"]].append(topic["score"])
+
+    student_snapshots = [
+        {
+            "studentId": summary["student"]["id"],
+            "name": summary["student"]["name"],
+            "averageScore": summary["averageScore"],
+            "latestScore": summary["latestScore"],
+            "riskLevel": summary["riskLevel"],
+        }
+        for summary in valid_summaries
+    ]
+
+    return {
+        "totalStudents": len(students),
+        "averageScore": _safe_mean([summary["averageScore"] for summary in valid_summaries]),
+        "highRiskStudents": sum(summary["riskLevel"] == "high" for summary in valid_summaries),
+        "connectorsOnline": sum(item["status"] == "connected" for item in get_connectors()),
+        "studentOptions": [{"id": item["studentId"], "name": item["name"]} for item in student_snapshots],
+        "studentSnapshots": student_snapshots,
+        "topicHeatmap": [
+            {"topic": topic, "score": _safe_mean(scores)} for topic, scores in sorted(topic_scores.items())
         ],
+        "distribution": [
+            {
+                "label": label.replace("_", " ").title(),
+                "count": sum(summary["riskLevel"] == label for summary in valid_summaries),
+            }
+            for label in ["high", "moderate", "low"]
+        ],
+        "serviceTopology": service_topology(),
+    }
+
+
+def student_dashboard_payload(student_id):
+    summary = student_summary(student_id)
+    feedback = feedback_bundle(student_id)
+    if not summary or not feedback:
+        return None
+    return {
+        "summary": summary,
+        "feedback": feedback,
+        "pipeline": pipeline_status(),
+    }
+
+
+def teacher_dashboard_payload(selected_student_id=None):
+    overview = class_overview()
+    chosen_student_id = selected_student_id or overview["studentOptions"][0]["id"]
+    return {
+        "overview": overview,
+        "selectedStudent": student_summary(chosen_student_id),
+        "selectedFeedback": feedback_bundle(chosen_student_id),
+        "connectors": get_connectors(),
+        "pipeline": pipeline_status(),
+    }
+
+
+def admin_dashboard_payload():
+    users = get_users()
+    counts = defaultdict(int)
+    for user in users:
+        counts[user["role"]] += 1
+
+    events = get_events()
+    return {
+        "counts": {
+            "users": len(users),
+            "students": counts["student"],
+            "teachers": counts["teacher"],
+            "admins": counts["admin"],
+            "events": len(events),
+            "connectedLms": sum(item["status"] == "connected" for item in get_connectors()),
+        },
+        "users": users,
+        "connectors": get_connectors(),
+        "recentEvents": list(reversed(events[-8:])),
+        "pipeline": pipeline_status(),
+        "serviceTopology": service_topology(),
     }
 
 
 def visualization_payload(student_id=None):
-    overview = class_overview()
-    selected = student_id or overview["studentOptions"][0]["id"]
-    summary = student_summary(selected)
-    feedback = feedback_bundle(selected)
-    return {
-        "overview": overview,
-        "selectedStudent": summary,
-        "feedback": feedback,
-        "connectors": get_connectors(),
-    }
+    return teacher_dashboard_payload(student_id)
 
+
+def demo_accounts():
+    return [
+        {
+            "role": user["role"],
+            "email": user["email"],
+            "password": user["password"],
+            "name": user["name"],
+        }
+        for user in get_users(include_password=True)
+    ]

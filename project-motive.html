@@ -56,7 +56,7 @@
         <p>
           The project is meant to solve a real academic problem: mathematics learning platforms
           generate large amounts of student performance data, but that data rarely becomes useful
-          feedback for students, instructors, and parents in time to improve outcomes. The motive
+          feedback for students, instructors, and administrators in time to improve outcomes. The motive
           is to convert disconnected activity logs into structured learning analytics and
           personalized intervention pathways.
         </p>
@@ -69,7 +69,7 @@
           <p>
             Online mathematics platforms, LMS systems, and digital assessments continuously produce
             learner activity data. In most institutions, this data remains fragmented across
-            systems, so neither teachers nor parents get a clear view of concept mastery, repeated
+            systems, so neither teachers nor academic administrators get a clear view of concept mastery, repeated
             mistakes, weak topics, or student risk in real time.
           </p>
         </section>
@@ -79,8 +79,9 @@
           <h2>What the system must achieve</h2>
           <p>
             The system must provide real-time learning analytics and personalized feedback through a
-            scalable and secure microservices architecture. It must support feedback for students,
-            instructors, and parents, integrate with existing LMS platforms, and expose live visual
+            scalable and secure microservices architecture. In this implementation it supports
+            role-based feedback for students, instructors, and administrators, integrates with
+            existing LMS platforms, and exposes live visual
             insights through a modern frontend.
           </p>
         </section>
@@ -100,7 +101,7 @@
           </article>
           <article class="card">
             <h3>Feedback Generator Service</h3>
-            <p>Builds tailored feedback for students, instructors, and parents from the analyzed data.</p>
+            <p>Builds tailored feedback for students and instructors from the analyzed data.</p>
           </article>
           <article class="card">
             <h3>Visualization Service</h3>
@@ -131,6 +132,17 @@
           <li>Kafka models distributed event transmission between services.</li>
           <li>Cassandra stores large-scale event history for analytics.</li>
           <li>React and D3 render a monitoring and feedback dashboard in near real time.</li>
+        </ul>
+      </section>
+
+      <section class="panel">
+        <p class="eyebrow">Implemented Roles</p>
+        <h2>What is included in this submission</h2>
+        <ul>
+          <li>Student page for personalized feedback, topic mastery, and performance trend.</li>
+          <li>Teacher page for class analytics, student drill-down, and LMS connector monitoring.</li>
+          <li>Admin page for runtime user management, connector control, and event ingestion.</li>
+          <li>Parent-facing page is intentionally excluded from the current submission scope.</li>
         </ul>
       </section>
     </main>

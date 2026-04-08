@@ -41,10 +41,10 @@
   };
 
   const CHART_COLORS = {
-    primary: "#224c7a",
-    primaryFill: "rgba(34, 76, 122, 0.16)",
-    accent: "#b85b3d",
-    palette: ["#224c7a", "#c9942f", "#b85b3d", "#6f86a6", "#8f6a2f"]
+    primary: "#1e88ff",
+    primaryFill: "rgba(30, 136, 255, 0.18)",
+    accent: "#ff6b57",
+    palette: ["#1e88ff", "#ffb703", "#ff6b57", "#36cfc9", "#7b61ff"]
   };
 
   const SEED_USERS = [

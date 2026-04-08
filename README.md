@@ -1,4 +1,4 @@
-# AI-Driven Learning Analytics and Personalized Feedback System for Mathematics Education
+# IoT-Enabled AI-Driven Learning Analytics and Personalized Feedback System for Mathematics Education
 
 Project codename: `Math Analytics Studio`
 
@@ -15,6 +15,10 @@ Open it at:
 Separate project motive file:
 
 `http://localhost/mathematics/project-motive.html`
+
+Separate IoT architecture file:
+
+`http://localhost/mathematics/iot-architecture.html`
 
 ## Demo Credentials
 
@@ -38,3 +42,6 @@ Admin account:
 - Teacher dashboard with charts and student drill-down
 - Admin runtime CRUD for users and questions
 - Session-only storage with JSON export
+- Project motive page framed for a hardware-free IoT smart classroom model
+- IoT positioning based on virtual nodes, simulated events, and centralized analytics
+- Separate IoT architecture page for final-year project explanation
